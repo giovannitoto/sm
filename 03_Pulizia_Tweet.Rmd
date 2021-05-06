@@ -85,7 +85,13 @@ tw$tweet = str_remove(tw$tweet, "aggiornamento \\d+")
 #aggiornamento1, 2, ..d+ sta per numeri
 tw$tweet = gsub("\\b[0-9\\W]+\\b", "", tw$tweet)#gsub 
 #rimuovo parole unicamente composti da cifre
+
+# rimuovo le emoticon
+tw$tweet = gsub("emote_\\w+:\\w+", "", tw$tweet)
+tw$tweet = gsub("emote_\\w+", "", tw$tweet)
 ```
+
+
 
 ```{r}
 #save(tw, file = "Tweets_pulito.RData")

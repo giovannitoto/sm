@@ -299,10 +299,5 @@ bi_IV[1:100,] %>% wordcloud2( size=1.6, shape = "circle", backgroundColor = "bla
 
 
 
-```{r}
-tw %>% unnest_tokens(word,tweet) %>% 
-  group_by(word) %>% summarise(tot=n()) %>% 
-  arrange(desc(tot)) %>% print(n=80)
-```
 
 
