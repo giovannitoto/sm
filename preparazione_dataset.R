@@ -1,6 +1,6 @@
 # ---------------------------------------------------------------------------- #
 
-tweets <- read.csv("tweets.csv", sep="\t", encoding="UTF-8")
+tweets <- read.csv("tweets/tweets.csv", sep="\t", encoding="UTF-8")
 
 # rimuovo id del tweet
 tweets$X.U.FEFF.id <- NULL
@@ -119,3 +119,5 @@ tweets$partito[tweets$username %in% FdI] <- "FdI"
 tweets$partito[tweets$username %in% IV] <- "IV"
 
 # ---------------------------------------------------------------------------- #
+
+save(tweets, file = "Tweets.RData")
