@@ -53,7 +53,7 @@ plot_LSP <- data_LSP %>%
             ggplot( aes(x = name, y = ntweets)) +
             geom_bar(stat="identity", fill="#f68060", alpha=.6, width=.4) +
             coord_flip() +
-            xlab("") +
+            xlab("") + ylab("") + ggtitle("Lega Salvini Premier") +
             theme_bw()
 
 ## Fradelli d'Italia
@@ -67,7 +67,7 @@ plot_FdI <- data_FdI %>%
             ggplot( aes(x = name, y = ntweets)) +
             geom_bar(stat="identity", fill="#f68060", alpha=.6, width=.4) +
             coord_flip() +
-            xlab("") +
+            xlab("") + ylab("") + ggtitle("Fratelli d'Italia") +
             theme_bw()
 
 
@@ -82,7 +82,7 @@ plot_FI <- data_FI %>%
             ggplot( aes(x = name, y = ntweets)) +
             geom_bar(stat="identity", fill="#f68060", alpha=.6, width=.4) +
             coord_flip() +
-            xlab("") +
+            xlab("") + ylab("") + ggtitle("Forza Italia") +
             theme_bw()
 
 ## Italia Viva
@@ -96,7 +96,7 @@ plot_IV <- data_IV %>%
             ggplot( aes(x = name, y = ntweets)) +
             geom_bar(stat="identity", fill="#f68060", alpha=.6, width=.4) +
             coord_flip() +
-            xlab("") +
+            xlab("") + ylab("") + ggtitle("Italia Viva") +
             theme_bw()
 
 ## Partito Democratico
@@ -110,7 +110,7 @@ plot_PD <- data_PD %>%
             ggplot( aes(x = name, y = ntweets)) +
             geom_bar(stat="identity", fill="#f68060", alpha=.6, width=.4) +
             coord_flip() +
-            xlab("") +
+            xlab("") + ylab("") + ggtitle("Partito Democratico") +
             theme_bw()
 
 ## Movimento 5 Stelle
@@ -124,7 +124,7 @@ plot_M5S <- data_M5S %>%
             ggplot( aes(x = name, y = ntweets)) +
             geom_bar(stat="identity", fill="#f68060", alpha=.6, width=.4) +
             coord_flip() +
-            xlab("") +
+            xlab("") + ylab("") + ggtitle("Movimento 5 Stelle") +
             theme_bw()
 
 plot_grid(plot_LSP, plot_FdI, plot_FI, plot_IV, plot_PD, plot_M5S, ncol = 2)
