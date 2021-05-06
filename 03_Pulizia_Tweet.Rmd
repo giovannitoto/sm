@@ -79,37 +79,14 @@ for(i in unique(tw$partito)){
 }
 
 ```
-```{r}
-save(tw, file = "Tweets_pulito.RData")
-```
-
-## Analisi esplorative
-### Monogrammi
 
 ```{r}
-tw %>% unnest_tokens(word,tweet) %>% 
-  group_by(word) %>% summarise(tot=n()) %>% 
-  arrange(desc(tot)) %>% print(n=80)
-```
-
-
-### Bigrammi
-
-```{r}
-
-ttU = tt %>% unnest_ngrams(word, tweet, n=2)
-#parole che vogliamo eliminare
-tt$tweet = str_remove(tt$tweet, "non | oggi |più")
-tt$tweet = str_remove(tt$tweet, "aggiornamento \\d+")
+tw$tweet = str_remove(tw$tweet, "aggiornamento \\d+")
 #aggiornamento1, 2, ..d+ sta per numeri
-tt$tweet = gsub("\\b[0-9\\W]+\\b", "", tt$tweet)#gsub 
+tw$tweet = gsub("\\b[0-9\\W]+\\b", "", tw$tweet)#gsub 
 #rimuovo parole unicamente composti da cifre
-tt$tweet = wordStem(tt$tweet, language = "it")
-ttU = tt %>% unnest_ngrams(word, tweet, n=2) #bigrammi
-
-tt %>% unnest_ngrams(word,tweet,n=2) %>% group_by(word) %>% #raggruppo per parola
-  summarise(tot=n()) %>% 
-  arrange(desc(tot)) %>% print(n=20)
 ```
 
-
+```{r}
+#save(tw, file = "Tweets_pulito.RData")
+```

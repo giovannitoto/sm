@@ -6,6 +6,8 @@
 # tweet (#salvini come unico hashtag e #salvini con anche altri hashtag sono
 # considerati diversi)
 
+load("Tweets.RData")
+
 hashtag_to_fix <- unique(tweets$hashtags)
 hashtag_list <- c()
 for (h in hashtag_to_fix) {
@@ -69,3 +71,102 @@ data %>%
 
 # ----------------------------------------------------------------------------- #
 
+# Numero di tweet per ogni politico per ogni partito
+
+## Lega
+ntweets <- sapply(unique(tweets$username[tweets$partito == "LSP"]), function(x) length(tweets$tweet[tweets$username == x]))
+data <- as.data.frame(sort(ntweets, decreasing = T))
+data$nomi <- rownames(data)
+colnames(data) <- c("ntweets", "nomi")
+
+data %>%
+  mutate(name = fct_reorder(nomi, desc(ntweets))) %>%
+  ggplot( aes(x = name, y = ntweets)) +
+  geom_bar(stat="identity", fill="#f68060", alpha=.6, width=.4) +
+  coord_flip() +
+  xlab("") +
+  theme_bw()
+
+## Fradelli d'Italia
+ntweets <- sapply(unique(tweets$username[tweets$partito == "FdI"]), function(x) length(tweets$tweet[tweets$username == x]))
+data <- as.data.frame(sort(ntweets, decreasing = T))
+data$nomi <- rownames(data)
+colnames(data) <- c("ntweets", "nomi")
+
+data %>%
+  mutate(name = fct_reorder(nomi, desc(ntweets))) %>%
+  ggplot( aes(x = name, y = ntweets)) +
+  geom_bar(stat="identity", fill="#f68060", alpha=.6, width=.4) +
+  coord_flip() +
+  xlab("") +
+  theme_bw()
+
+## Forza Italia
+ntweets <- sapply(unique(tweets$username[tweets$partito == "FI"]), function(x) length(tweets$tweet[tweets$username == x]))
+data <- as.data.frame(sort(ntweets, decreasing = T))
+data$nomi <- rownames(data)
+colnames(data) <- c("ntweets", "nomi")
+
+data %>%
+  mutate(name = fct_reorder(nomi, desc(ntweets))) %>%
+  ggplot( aes(x = name, y = ntweets)) +
+  geom_bar(stat="identity", fill="#f68060", alpha=.6, width=.4) +
+  coord_flip() +
+  xlab("") +
+  theme_bw()
+
+## Italia Viva
+ntweets <- sapply(unique(tweets$username[tweets$partito == "IV"]), function(x) length(tweets$tweet[tweets$username == x]))
+data <- as.data.frame(sort(ntweets, decreasing = T))
+data$nomi <- rownames(data)
+colnames(data) <- c("ntweets", "nomi")
+
+data %>%
+  mutate(name = fct_reorder(nomi, desc(ntweets))) %>%
+  ggplot( aes(x = name, y = ntweets)) +
+  geom_bar(stat="identity", fill="#f68060", alpha=.6, width=.4) +
+  coord_flip() +
+  xlab("") +
+  theme_bw()
+
+## Partito Democratico
+ntweets <- sapply(unique(tweets$username[tweets$partito == "PD"]), function(x) length(tweets$tweet[tweets$username == x]))
+data <- as.data.frame(sort(ntweets, decreasing = T))
+data$nomi <- rownames(data)
+colnames(data) <- c("ntweets", "nomi")
+
+data %>%
+  mutate(name = fct_reorder(nomi, desc(ntweets))) %>%
+  ggplot( aes(x = name, y = ntweets)) +
+  geom_bar(stat="identity", fill="#f68060", alpha=.6, width=.4) +
+  coord_flip() +
+  xlab("") +
+  theme_bw()
+
+## Movimento 5 Stelle
+ntweets <- sapply(unique(tweets$username[tweets$partito == "M5S"]), function(x) length(tweets$tweet[tweets$username == x]))
+data <- as.data.frame(sort(ntweets, decreasing = T))
+data$nomi <- rownames(data)
+colnames(data) <- c("ntweets", "nomi")
+
+data %>%
+  mutate(name = fct_reorder(nomi, desc(ntweets))) %>%
+  ggplot( aes(x = name, y = ntweets)) +
+  geom_bar(stat="identity", fill="#f68060", alpha=.6, width=.4) +
+  coord_flip() +
+  xlab("") +
+  theme_bw()
+
+## Giuseppe Conte
+ntweets <- sapply(unique(tweets$username[tweets$partito == "MVP"]), function(x) length(tweets$tweet[tweets$username == x]))
+data <- as.data.frame(sort(ntweets, decreasing = T))
+data$nomi <- rownames(data)
+colnames(data) <- c("ntweets", "nomi")
+
+data %>%
+  mutate(name = fct_reorder(nomi, desc(ntweets))) %>%
+  ggplot( aes(x = name, y = ntweets)) +
+  geom_bar(stat="identity", fill="#f68060", alpha=.6, width=.4) +
+  coord_flip() +
+  xlab("") +
+  theme_bw()

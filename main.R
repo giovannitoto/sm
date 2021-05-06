@@ -73,6 +73,8 @@ tt$tweet = gsub("\\b[0-9\\W]+\\b", "", tt$tweet)#gsub
 tt$tweet = wordStem(tt$tweet, language = "it")
 ttU = tt %>% unnest_ngrams(word, tweet, n=2) #bigrammi
 
+?wordStem
+
 tt %>% unnest_ngrams(word,tweet,n=2) %>% group_by(word) %>% #raggruppo per parola
   summarise(tot=n()) %>% 
   arrange(desc(tot)) %>% print(n=20)

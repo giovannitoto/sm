@@ -1,0 +1,308 @@
+---
+title: "Analisi_Esplorative"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidytext)
+require(dplyr)
+library(TextWiller)
+library(magrittr)    # per rimuovere piu' parole insieme
+library(rtweet)      # ts_plot
+library(lubridate)   # as_datetime
+library(wordcloud2)
+library(gridExtra)
+library(cowplot)
+load("Tweets_pulito.RData")
+```
+## Analisi esplorative globali
+
+### Monogrammi
+
+```{r}
+tw %>% unnest_tokens(word,tweet) %>% 
+  group_by(word) %>% summarise(tot=n()) %>% 
+  arrange(desc(tot)) %>% print(n=80)
+```
+
+
+### Bigrammi
+
+```{r}
+tw %>% unnest_ngrams(word,tweet,n=2) %>% group_by(word) %>% #raggruppo per parola
+  summarise(tot=n()) %>% 
+  arrange(desc(tot)) %>% print(n=20)
+```
+
+
+## Analisi esplorative per partito
+
+```{r}
+## Lega
+ntweets <- sapply(unique(tweets$username[tweets$partito == "LSP"]), function(x) length(tweets$tweet[tweets$username == x]))
+data_LSP <- as.data.frame(sort(ntweets, decreasing = T))
+data_LSP$nomi <- rownames(data_LSP)
+colnames(data_LSP) <- c("ntweets", "nomi")
+
+plot_LSP <- data_LSP %>%
+            mutate(name = fct_reorder(nomi, desc(ntweets))) %>% 
+            ggplot( aes(x = name, y = ntweets)) +
+            geom_bar(stat="identity", fill="#f68060", alpha=.6, width=.4) +
+            coord_flip() +
+            xlab("") +
+            theme_bw()
+
+## Fradelli d'Italia
+ntweets <- sapply(unique(tweets$username[tweets$partito == "FdI"]), function(x) length(tweets$tweet[tweets$username == x]))
+data_FdI <- as.data.frame(sort(ntweets, decreasing = T))
+data_FdI$nomi <- rownames(data_FdI)
+colnames(data_FdI) <- c("ntweets", "nomi")
+
+plot_FdI <- data_FdI %>%
+            mutate(name = fct_reorder(nomi, desc(ntweets))) %>% 
+            ggplot( aes(x = name, y = ntweets)) +
+            geom_bar(stat="identity", fill="#f68060", alpha=.6, width=.4) +
+            coord_flip() +
+            xlab("") +
+            theme_bw()
+
+
+## Forza Italia
+ntweets <- sapply(unique(tweets$username[tweets$partito == "FI"]), function(x) length(tweets$tweet[tweets$username == x]))
+data_FI <- as.data.frame(sort(ntweets, decreasing = T))
+data_FI$nomi <- rownames(data_FI)
+colnames(data_FI) <- c("ntweets", "nomi")
+
+plot_FI <- data_FI %>%
+            mutate(name = fct_reorder(nomi, desc(ntweets))) %>% 
+            ggplot( aes(x = name, y = ntweets)) +
+            geom_bar(stat="identity", fill="#f68060", alpha=.6, width=.4) +
+            coord_flip() +
+            xlab("") +
+            theme_bw()
+
+## Italia Viva
+ntweets <- sapply(unique(tweets$username[tweets$partito == "IV"]), function(x) length(tweets$tweet[tweets$username == x]))
+data_IV <- as.data.frame(sort(ntweets, decreasing = T))
+data_IV$nomi <- rownames(data_IV)
+colnames(data_IV) <- c("ntweets", "nomi")
+
+plot_IV <- data_IV %>%
+            mutate(name = fct_reorder(nomi, desc(ntweets))) %>% 
+            ggplot( aes(x = name, y = ntweets)) +
+            geom_bar(stat="identity", fill="#f68060", alpha=.6, width=.4) +
+            coord_flip() +
+            xlab("") +
+            theme_bw()
+
+## Partito Democratico
+ntweets <- sapply(unique(tweets$username[tweets$partito == "PD"]), function(x) length(tweets$tweet[tweets$username == x]))
+data_PD <- as.data.frame(sort(ntweets, decreasing = T))
+data_PD$nomi <- rownames(data_PD)
+colnames(data_PD) <- c("ntweets", "nomi")
+
+plot_PD <- data_PD %>%
+            mutate(name = fct_reorder(nomi, desc(ntweets))) %>% 
+            ggplot( aes(x = name, y = ntweets)) +
+            geom_bar(stat="identity", fill="#f68060", alpha=.6, width=.4) +
+            coord_flip() +
+            xlab("") +
+            theme_bw()
+
+## Movimento 5 Stelle
+ntweets <- sapply(unique(tweets$username[tweets$partito == "M5S"]), function(x) length(tweets$tweet[tweets$username == x]))
+data_M5S <- as.data.frame(sort(ntweets, decreasing = T))
+data_M5S$nomi <- rownames(data_M5S)
+colnames(data_M5S) <- c("ntweets", "nomi")
+
+plot_M5S <- data_M5S %>%
+            mutate(name = fct_reorder(nomi, desc(ntweets))) %>% 
+            ggplot( aes(x = name, y = ntweets)) +
+            geom_bar(stat="identity", fill="#f68060", alpha=.6, width=.4) +
+            coord_flip() +
+            xlab("") +
+            theme_bw()
+
+plot_grid(plot_LSP, plot_FdI, plot_FI, plot_IV, plot_PD, plot_M5S, ncol = 2)
+```
+
+
+
+### Giuseppe Conte
+```{r}
+mono_conte <- tw[tw$partito == "MVP",] %>% unnest_tokens(word,tweet) %>% 
+  group_by(word) %>% summarise(tot=n()) %>% 
+  arrange(desc(tot)) %>% print(n = 80)
+```
+
+
+```{r}
+mono_conte[1:500,] %>% wordcloud2( size=0.6, shape = "circle")
+```
+
+```{r}
+bi_conte <- tw[tw$partito == "MVP",] %>% unnest_ngrams(word,tweet,n=2) %>% group_by(word) %>% #raggruppo per parola
+  summarise(tot=n()) %>% 
+  arrange(desc(tot)) %>% print(n = 80)
+```
+
+
+```{r}
+bi_conte[1:200,] %>% wordcloud2( size=1.6, shape = "circle", backgroundColor = "black")
+```
+
+
+### Movimento 5 stelle
+```{r}
+mono_M5S <- tw[tw$partito == "M5S",] %>% unnest_tokens(word,tweet) %>% 
+  group_by(word) %>% summarise(tot=n()) %>% 
+  arrange(desc(tot)) %>% print(n = 80)
+```
+
+
+```{r}
+mono_M5S[1:500,] %>% wordcloud2( size=0.6, shape = "circle")
+```
+
+```{r}
+bi_M5S <- tw[tw$partito == "M5S",] %>% unnest_ngrams(word,tweet,n=2) %>% group_by(word) %>% #raggruppo per parola
+  summarise(tot=n()) %>% 
+  arrange(desc(tot)) %>% print(n = 80)
+```
+
+
+```{r}
+bi_M5S[1:100,] %>% wordcloud2( size=1.6, shape = "circle", backgroundColor = "black")
+```
+
+### Lega Salvini - Premier
+```{r}
+mono_LSP <- tw[tw$partito == "LSP",] %>% unnest_tokens(word,tweet) %>% 
+  group_by(word) %>% summarise(tot=n()) %>% 
+  arrange(desc(tot)) %>% print(n = 80)
+```
+
+
+```{r}
+mono_LSP[1:500,] %>% wordcloud2( size=1.6, shape = "circle")
+```
+
+```{r}
+bi_LSP <- tw[tw$partito == "LSP",] %>% unnest_ngrams(word,tweet,n=2) %>% group_by(word) %>% #raggruppo per parola
+  summarise(tot=n()) %>% 
+  arrange(desc(tot)) %>% print(n = 80)
+```
+
+
+```{r}
+bi_LSP[1:100,] %>% wordcloud2( size=1.6, shape = "circle", backgroundColor = "black")
+```
+
+### Partito Democratico
+```{r}
+mono_PD <- tw[tw$partito == "PD",] %>% unnest_tokens(word,tweet) %>% 
+  group_by(word) %>% summarise(tot=n()) %>% 
+  arrange(desc(tot)) %>% print(n = 80)
+```
+
+
+```{r}
+mono_PD[1:500,] %>% wordcloud2( size=0.6, shape = "circle")
+```
+
+```{r}
+bi_PD <- tw[tw$partito == "PD",] %>% unnest_ngrams(word,tweet,n=2) %>% group_by(word) %>% #raggruppo per parola
+  summarise(tot=n()) %>% 
+  arrange(desc(tot)) %>% print(n = 80)
+```
+
+
+```{r}
+bi_PD[1:100,] %>% wordcloud2( size=0.6, shape = "circle", backgroundColor = "black")
+```
+
+### Forza Italia
+```{r}
+mono_FI <- tw[tw$partito == "FI",] %>% unnest_tokens(word,tweet) %>% 
+  group_by(word) %>% summarise(tot=n()) %>% 
+  arrange(desc(tot)) %>% print(n = 80)
+```
+
+
+```{r}
+mono_FI[1:500,] %>% wordcloud2( size=0.6, shape = "circle")
+```
+
+```{r}
+bi_FI <- tw[tw$partito == "FI",] %>% unnest_ngrams(word,tweet,n=2) %>% group_by(word) %>% #raggruppo per parola
+  summarise(tot=n()) %>% 
+  arrange(desc(tot)) %>% print(n = 80)
+```
+
+
+```{r}
+bi_FI[1:100,] %>% wordcloud2( size=1.6, shape = "circle", backgroundColor = "black")
+```
+
+### Fratelli d'Italia
+```{r}
+mono_FdI <- tw[tw$partito == "FdI",] %>% unnest_tokens(word,tweet) %>% 
+  group_by(word) %>% summarise(tot=n()) %>% 
+  arrange(desc(tot)) %>% print(n = 80)
+```
+
+
+```{r}
+mono_FdI[1:500,] %>% wordcloud2( size=0.6, shape = "circle")
+```
+
+```{r}
+bi_FdI <- tw[tw$partito == "FdI",] %>% unnest_ngrams(word,tweet,n=2) %>% group_by(word) %>% #raggruppo per parola
+  summarise(tot=n()) %>% 
+  arrange(desc(tot)) %>% print(n = 80)
+```
+
+
+```{r}
+bi_FdI[1:100,] %>% wordcloud2( size=1.6, shape = "circle", backgroundColor = "black")
+```
+
+### Italia Viva
+```{r}
+mono_IV <- tw[tw$partito == "IV",] %>% unnest_tokens(word,tweet) %>% 
+  group_by(word) %>% summarise(tot=n()) %>% 
+  arrange(desc(tot)) %>% print(n = 80)
+```
+
+
+```{r}
+mono_IV[1:500,] %>% wordcloud2( size=0.6, shape = "circle")
+```
+
+```{r}
+bi_IV <- tw[tw$partito == "IV",] %>% unnest_ngrams(word,tweet,n=2) %>% group_by(word) %>% #raggruppo per parola
+  summarise(tot=n()) %>% 
+  arrange(desc(tot)) %>% print(n = 80)
+```
+
+
+```{r}
+bi_IV[1:100,] %>% wordcloud2( size=1.6, shape = "circle", backgroundColor = "black")
+```
+
+
+
+
+
+
+```{r}
+tw %>% unnest_tokens(word,tweet) %>% 
+  group_by(word) %>% summarise(tot=n()) %>% 
+  arrange(desc(tot)) %>% print(n=80)
+```
+
+
