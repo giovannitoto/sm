@@ -17,6 +17,8 @@ library(lubridate)   # as_datetime
 library(wordcloud2)
 library(gridExtra)
 library(cowplot)
+library(ggplot2)
+library(forcats)
 load("Tweets_pulito.RData")
 ```
 ## Analisi esplorative globali
@@ -25,7 +27,7 @@ load("Tweets_pulito.RData")
 
 ```{r}
 tw %>% unnest_tokens(word,tweet) %>% 
-  group_by(word) %>% summarise(tot=n()) %>% 
+  group_by(word) %>% summarise(tot=n(), freq = n()/nrow(tw)) %>% 
   arrange(desc(tot)) %>% print(n=80)
 ```
 
@@ -43,7 +45,7 @@ tw %>% unnest_ngrams(word,tweet,n=2) %>% group_by(word) %>% #raggruppo per parol
 
 ```{r}
 ## Lega
-ntweets <- sapply(unique(tweets$username[tweets$partito == "LSP"]), function(x) length(tweets$tweet[tweets$username == x]))
+ntweets <- sapply(unique(tw$username[tw$partito == "LSP"]), function(x) length(tw$tweet[tw$username == x]))
 data_LSP <- as.data.frame(sort(ntweets, decreasing = T))
 data_LSP$nomi <- rownames(data_LSP)
 colnames(data_LSP) <- c("ntweets", "nomi")
@@ -57,7 +59,7 @@ plot_LSP <- data_LSP %>%
             theme_bw()
 
 ## Fradelli d'Italia
-ntweets <- sapply(unique(tweets$username[tweets$partito == "FdI"]), function(x) length(tweets$tweet[tweets$username == x]))
+ntweets <- sapply(unique(tw$username[tw$partito == "FdI"]), function(x) length(tw$tweet[tw$username == x]))
 data_FdI <- as.data.frame(sort(ntweets, decreasing = T))
 data_FdI$nomi <- rownames(data_FdI)
 colnames(data_FdI) <- c("ntweets", "nomi")
@@ -72,7 +74,7 @@ plot_FdI <- data_FdI %>%
 
 
 ## Forza Italia
-ntweets <- sapply(unique(tweets$username[tweets$partito == "FI"]), function(x) length(tweets$tweet[tweets$username == x]))
+ntweets <- sapply(unique(tw$username[tw$partito == "FI"]), function(x) length(tw$tweet[tw$username == x]))
 data_FI <- as.data.frame(sort(ntweets, decreasing = T))
 data_FI$nomi <- rownames(data_FI)
 colnames(data_FI) <- c("ntweets", "nomi")
@@ -86,7 +88,7 @@ plot_FI <- data_FI %>%
             theme_bw()
 
 ## Italia Viva
-ntweets <- sapply(unique(tweets$username[tweets$partito == "IV"]), function(x) length(tweets$tweet[tweets$username == x]))
+ntweets <- sapply(unique(tw$username[tw$partito == "IV"]), function(x) length(tw$tweet[tw$username == x]))
 data_IV <- as.data.frame(sort(ntweets, decreasing = T))
 data_IV$nomi <- rownames(data_IV)
 colnames(data_IV) <- c("ntweets", "nomi")
@@ -100,7 +102,7 @@ plot_IV <- data_IV %>%
             theme_bw()
 
 ## Partito Democratico
-ntweets <- sapply(unique(tweets$username[tweets$partito == "PD"]), function(x) length(tweets$tweet[tweets$username == x]))
+ntweets <- sapply(unique(tw$username[tw$partito == "PD"]), function(x) length(tw$tweet[tw$username == x]))
 data_PD <- as.data.frame(sort(ntweets, decreasing = T))
 data_PD$nomi <- rownames(data_PD)
 colnames(data_PD) <- c("ntweets", "nomi")
@@ -114,7 +116,7 @@ plot_PD <- data_PD %>%
             theme_bw()
 
 ## Movimento 5 Stelle
-ntweets <- sapply(unique(tweets$username[tweets$partito == "M5S"]), function(x) length(tweets$tweet[tweets$username == x]))
+ntweets <- sapply(unique(tw$username[tw$partito == "M5S"]), function(x) length(tw$tweet[tw$username == x]))
 data_M5S <- as.data.frame(sort(ntweets, decreasing = T))
 data_M5S$nomi <- rownames(data_M5S)
 colnames(data_M5S) <- c("ntweets", "nomi")
@@ -170,7 +172,7 @@ mono_M5S[1:500,] %>% wordcloud2( size=0.6, shape = "circle")
 
 ```{r}
 bi_M5S <- tw[tw$partito == "M5S",] %>% unnest_ngrams(word,tweet,n=2) %>% group_by(word) %>% #raggruppo per parola
-  summarise(tot=n()) %>% 
+  summarise(tot=n(), freq = n()/nrow(bi_M5S)) %>% 
   arrange(desc(tot)) %>% print(n = 80)
 ```
 

@@ -79,7 +79,22 @@ for(i in unique(tw$partito)){
 }
 
 ```
+Togliamo le parole che sono usate con meno frequenza:
+```{r}
+parole_poco_usate <- tw %>% mutate(id = 1:n()) %>% unnest_tokens(word,tweet) %>% group_by(id) %>% group_by(word)  
 
+
+parole_poco_usate <- parole_poco_usate %>% 
+                      summarise(tot=n(), freq = n()/nrow(parole_poco_usate)) %>% 
+                        arrange(tot) 
+
+sum(parole_poco_usate$tot)
+
+nrow(parole_poco_usate[parole_poco_usate$freq < 0.01,])
+```
+
+
+Togliamo delle sequenze particolari di caratteri:
 ```{r}
 tw$tweet = str_remove(tw$tweet, "aggiornamento \\d+")
 #aggiornamento1, 2, ..d+ sta per numeri
@@ -87,9 +102,20 @@ tw$tweet = gsub("\\b[0-9\\W]+\\b", "", tw$tweet)#gsub
 #rimuovo parole unicamente composti da cifre
 
 # rimuovo le emoticon
-tw$tweet = gsub("emote_\\w+:\\w+", "", tw$tweet)
+# tw$tweet = gsub("emote_\\w+:\\w+", "", tw$tweet)
 tw$tweet = gsub("emote_\\w+", "", tw$tweet)
 ```
+
+Riscriviamo le emoticon delle bandiere perchè sono viste come due parole "emoticon_flag:_stato":
+```{r}
+x <- unique(str_extract(tw$tweet, "emote_\\w+:\\w+"))[-1]
+x <- x[order(nchar(x), x, decreasing = T)]
+y <- sapply(x, function(k) str_replace(k, ":", "_"))
+
+for(i in 1:length(x)) str_replace(tw$tweet, x[i], y[i])
+```
+
+
 
 
 
