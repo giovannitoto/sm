@@ -11,7 +11,9 @@ Ora attiviamo l'ambiente e installiamo le librerie:
 
 ```conda activate twitter```
 
-```pip install twint```
+```conda install -c anaconda git```
+
+```pip install --user --upgrade git+https://github.com/twintproject/twint.git@origin/master#egg=twint```
 
 ```pip install tornado==4.5.3```
 
