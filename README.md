@@ -1,7 +1,7 @@
 # Social Media - Progetto
 
 ## Scaricare i tweet
-Per scaricare i tweet utilizziamo la libreria `twint` di *Python* attraverso l'interfaccia [Anaconda](https://www.anaconda.com/products/individual); prima di tutto creiamo un nuovo ambiente, chiamato *twitter*, in cui installare le librerie necessarie, ovvero [twint](https://github.com/twintproject/twint) e [Pandas](https://pandas.pydata.org/).
+Per scaricare i tweet utilizziamo la libreria `twint` di *Python* attraverso l'interfaccia [Anaconda](https://www.anaconda.com/products/individual); prima di tutto creiamo un nuovo ambiente, chiamato *twitter*, in cui installare le librerie necessarie, ovvero [twint](https://github.com/twintproject/twint), [Pandas](https://pandas.pydata.org/) e [emoji](https://pypi.org/project/emoji/).
 
 Da *Anaconda Prompt (Anaconda3)*, possiamo creare l'ambiente col seguente comando:
 
@@ -16,6 +16,8 @@ Ora attiviamo l'ambiente e installiamo le librerie:
 ```pip install --user --upgrade git+https://github.com/twintproject/twint.git@origin/master#egg=twint```
 
 ```pip install tornado==4.5.3```
+
+```pip install emoji```
 
 ```pip install ipykernel```
 
