@@ -1,5 +1,36 @@
 # ---------------------------------------------------------------------------- #
 
+# Osservo gli n-gammi e decido quali considerare come un'unica entita'
+library(dplyr)
+library(stringr)
+library(tidytext)
+
+rm(list=ls())
+load("data/01_tweets.RData")
+tweets <- tweets[!(tweets$username=="LegaSalvini"),]
+tweets <- tweets[tweets$reply_to==0,]
+tweets <- tweets[tweets$language=="it",]
+tweets$tweet <- tolower(tweets$tweet)
+tweets$tweet <- str_squish(tweets$tweet)
+tweets$tweet <- str_remove(tweets$tweet, "aggiornamento \\d+")
+tweets$tweet <- gsub("\\b[0-9\\W]+\\b", "", tweets$tweet)
+
+stop_words <- read.table("data/stopwords-it.txt", encoding="UTF-8",
+                         quote="\"", comment.char="")$V1
+stop_words <- paste(stop_words, collapse = '\\b|\\b')
+stop_words <- paste0('\\b', stop_words, '\\b')
+tweets$tweet <- stringr::str_replace_all(tweets$tweet, stop_words, "")
+
+res1 <- tweets %>% unnest_ngrams(word,tweet,n=1) %>% group_by(word) %>%
+  summarise(tot=n()) %>% arrange(desc(tot))
+res2 <- tweets %>% unnest_ngrams(word,tweet,n=2) %>% group_by(word) %>%
+  summarise(tot=n()) %>% arrange(desc(tot))
+res3 <- tweets %>% unnest_ngrams(word,tweet,n=3) %>% group_by(word) %>%
+  summarise(tot=n()) %>% arrange(desc(tot))
+
+
+# ---------------------------------------------------------------------------- #
+
 # Togliamo le parole che compaiono in una percentuale troppo bassa di tweet;
 # in particolare, rimuoviamo le parole che compaiono in meno del 0.1%=0.001 dei tweet.
 
