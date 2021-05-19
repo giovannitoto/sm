@@ -6,8 +6,6 @@
 
 rm(list=ls())
 load("data/01_tweets.RData")
-tw <- tweets[tweets$language=="it",]
-rm(tweets)
 
 # ---------------------------------------------------------------------------- #
 
@@ -15,7 +13,6 @@ library(TextWiller)
 library(dplyr)
 library(stringr)
 library(quanteda)
-library(quanteda.textstats)
 
 # ---------------------------------------------------------------------------- #
 
@@ -59,7 +56,7 @@ for(i in unique(tw$partito)){
                                 verbatim = TRUE,
                                 remove = FALSE,
                                 removeUnderscore = FALSE)
-    # Rimuovo url, che sono codificati col la stringa "wwwurlwww" da normalizzaTesti
+    # Rimuovo url, che sono codificati con la stringa "wwwurlwww" da normalizzaTesti
     tt$tweet <- str_remove(tt$tweet, "wwwurlwww")
     # Considero come alcuni gruppi di parole come singole entita'; a livello
     # pratico, unisco le parole sostituendo gli spazi con "_"
