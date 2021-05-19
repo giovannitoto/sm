@@ -1,6 +1,6 @@
 # ---------------------------------------------------------------------------- #
 
-# Osservo gli n-gammi e decido quali considerare come un'unica entita'
+# Osservo gli n-grammi e decido quali considerare come un'unica entita'
 library(dplyr)
 library(stringr)
 library(tidytext)
@@ -14,7 +14,6 @@ tweets$tweet <- tolower(tweets$tweet)
 tweets$tweet <- str_squish(tweets$tweet)
 tweets$tweet <- str_remove(tweets$tweet, "aggiornamento \\d+")
 tweets$tweet <- gsub("\\b[0-9\\W]+\\b", "", tweets$tweet)
-
 stop_words <- read.table("data/stopwords-it.txt", encoding="UTF-8",
                          quote="\"", comment.char="")$V1
 stop_words <- paste(stop_words, collapse = '\\b|\\b')
@@ -31,8 +30,14 @@ res3 <- tweets %>% unnest_ngrams(word,tweet,n=3) %>% group_by(word) %>%
 
 # ---------------------------------------------------------------------------- #
 
-# Togliamo le parole che compaiono in una percentuale troppo bassa di tweet;
-# in particolare, rimuoviamo le parole che compaiono in meno del 0.1%=0.001 dei tweet.
+library(dplyr)
+library(tidytext)
+# Togliamo gli stem che compaiono in una percentuale troppo bassa di tweet;
+# in particolare, rimuoviamo gli stem che compaiono in meno del 0.1%=0.001 dei tweet.
+rm(list=ls())
+load("data/02_tweets_stem.RData")
+tw <- tw[!(tw$username=="LegaSalvini"),]
+tw <- tw[tw$reply_to==0,]
 
 # conto quante volte appare ogni parola in ogni tweet
 parole_usate <- tw %>% select(tweet=tweet) %>% mutate(id = 1:n()) %>%
@@ -41,13 +46,13 @@ parole_usate <- tw %>% select(tweet=tweet) %>% mutate(id = 1:n()) %>%
 # conto in quanti tweet differenti le parole compaiono
 parole_usate <- parole_usate %>% group_by(word) %>%
   summarise(tot=n(), freq=n()/nrow(tw))
-parole_usate %>% select(word, tot, freq) %>% arrange(tot)
-parole_usate %>% select(word, tot, freq) %>% arrange(desc(tot))
+parole_usate %>% select(word, tot, freq) %>% arrange(tot) %>% print(n=50)
+parole_usate %>% select(word, tot, freq) %>% arrange(desc(tot)) %>% print(n=50)
 
 # numero di parole rare (a bassa frequenza)
-sum(parole_poco_usate$freq<0.001)
+sum(parole_usate$tot<10)
 
-nrow(parole_poco_usate[parole_poco_usate$freq < 0.01,])
+nrow(parole_usate[parole_poco_usate$freq<0.0001,])
 
 # ---------------------------------------------------------------------------- #
 

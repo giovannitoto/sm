@@ -19,7 +19,10 @@ library(gridExtra)
 library(cowplot)
 library(ggplot2)
 library(forcats)
+rm(list=ls())
 load("data/02_tweets.RData")
+tw$tweet <- str_squish(tw$tweet)
+tw <- tw[!(tw$username=="LegaSalvini"),]
 ```
 ## Analisi esplorative globali
 
@@ -35,9 +38,9 @@ tw %>% unnest_tokens(word,tweet) %>%
 ### Bigrammi
 
 ```{r}
-tw %>% unnest_ngrams(word,tweet,n=2) %>% group_by(word) %>% #raggruppo per parola
+tw %>% unnest_ngrams(word,tweet,n=3) %>% group_by(word) %>%
   summarise(tot=n()) %>% 
-  arrange(desc(tot)) %>% print(n=20)
+  arrange(desc(tot)) %>% print(n=50)
 ```
 
 

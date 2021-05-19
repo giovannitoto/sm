@@ -1,0 +1,27 @@
+SOCIAL MEDIA: PROGETTO
+Abbiamo scaricato tweet da esponenti dei sei principali partiti italiani; il nostro obiettivo e' caratterizzare questi sei gruppi 
+- valutando se individui all'interno dello stesso partito utilizzano lo stesso vocabolario e/o affrontano le stesse tematiche
+- osservando se determinati partiti tendono a essere piu' vicini tra loro sotto il punto di vista delle parole utilizzate o gli argomenti trattati.
+Operativamente svolgeremo le seguenti operazioni:
+(1) Scarichiamo i tweet utilizzando la libreria di Python twint, che non impone vincoli temporali, e li processiamo come segue:
+	(a) conversione delle emoticon in stringhe
+	(b) normalizzazione del testo (funzione normalizzaTesti di Linos Finos)
+	(c) rimozione stopwors
+	(d) rimozione di stringhe particolari (es: "aggiornamento 3")
+	(e) determinazione di gruppi di parole da trattare come singoli stem
+	(f) stemming e rimozione degli stem troppo comuni e/o troppo rari
+(2) Una volta creato un dataset strutturato, e' necessario valutare se analizzabile statisticamente; in particolare, devono valere:
+	(a) Se (n. termini) / (n. documenti) > 0.20, si ha un vocabolario troppo piccolo dovuto a un corpus non abbastanza estesto
+	(b) Se (n. hapax) / (n. termini) > 0.50, si ha un vocabolario troppo grande che non e' trattabili statisticamente
+(3) Ora iniziamo le analisi vere e proprie cercando di classificare i documenti (tweet) attraverso la combinazione tra l'Analisi delle Corrispondenze Lessicali (ACL) e metodi di clustering: ci aspettiamo che documenti appartenenti alla stesso partito siano nello stesso cluster o almeno documenti dello stesso partito che trattano dello stesso argomento. A livello pratico, utilizziamo l'ACL per ridurre la dimensionalita' del problema e i metodi di clustering per effettivamente definire i gruppi/cluster; alternativamente, potrebbe aver senso usare PCA e t-SNE per ottenere un risultato analogo ma grafico (PCA riduce dimensionalita', t-SNE produce grafico bidimensionale).
+(4) Una volta tratte le conclusioni del punto precedente, possiamo trovarci in due situazioni:
+	(a) la classificazione e' andata a buon fine, quindi possiamo affermare di voler fare il passo successivo, ovvero vogliamo anche capire quali sono gli argomenti che rendono simili diversi partiti e/o esponenti.
+	(b) la classificazione non e' andata a buon fine, quindi decidiamo di utilizzare un altro approccio per valutare eventuali somiglianze tra partiti e/o esponenti.
+In entrambi i casi utilizziamo la Latent Dirichlet Allocation (LDA) per determinare i topic trattati all'interno del corpus. Per determinare il numero di topic, costruiamo una Networks of Words e applichiamo il Metodo di Louvain per identificare le comunita' (topic); ovviamente non e' possibile costruire una rete sull'intero vocabolario, ergo e' necessario effettuare una selezione delle parole: l'indice piu' intuitivo che permette di stilare una classifica in ordine di importanza delle parole e' il Term Frequency (TF) che considera l'intero corpus come un unico documento. Avendo selezionato solo alcuni termini del vacabolario, i risultati saranno delle approssimazioni.
+*************
+Problema: come applicare l'LDA?
+Soluzione 1: costruire un'unica Network of Words, una sola LDA e poi guardare i singoli partiti osservando la distribuzione a posteriori empirica di solo parte del risultato generato.
+Soluzione 2: costruire una Network of Words diversa per ogni partito, una LDA per ogni partito e poi cercare di individuare gli argomenti dei vari partiti in maniera completamente indipendente tra loro.
+*************
+(5) Conclusioni
+Siamo riusciti a trovare un modo per classificare i documenti? I partiti sono omegenei al loro interno? Tutti i partiti trattano gli stessi argomenti oppure alcuni pongono maggior enfasi solo su determinati argomenti? 
