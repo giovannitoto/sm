@@ -61,6 +61,15 @@ tw$quote_url[tw$quote_url!=0] <- 1
 tw$reply_to[tw$reply_to=="[]"] <- 0
 tw$reply_to[tw$reply_to!=0] <- 1
 
+# converto la variabile 'hashtags' in testo per renderla analizzabile
+tw$hashtags <- gsub("\\[|\\]|'|,", "", tw$hashtags)
+# calcolo il numero di hashtag presente in ogni tweet
+htags_count <- strsplit(tw$hashtags, " ")
+htags_count <- lapply(htags_count, trimws)
+htags_count <- lapply(htags_count, length)
+htags_count <- unlist(htags_count)
+tw$hashtags_count <- htags_count
+
 # ---------------------------------------------------------------------------- #
 
 save(tw, file="data/01_tweets.RData")

@@ -6,6 +6,8 @@
 
 rm(list=ls())
 load("data/01_tweets.RData")
+# aggiungo colonna degli 
+tw$tweet_stem <- NA
 
 # ---------------------------------------------------------------------------- #
 
@@ -21,10 +23,13 @@ stop_words <- read.table("data/stopwords-it.txt", encoding="UTF-8",
                          quote="\"", comment.char="")$V1
 stop_words <- paste(stop_words, collapse = '\\b|\\b')
 stop_words <- paste0('\\b', stop_words, '\\b')
+
+# ---------------------------------------------------------------------------- #
 # Importo la lista delle parole da considerare come singole entita'
-words_to_merge <- read.delim("data/words_to_merge.txt", header=F)$V1
-words_to_merge <- sapply(words_to_merge, function(x) paste("\\b",x,"\\b",sep=""))
-words_to_merge <- words_to_merge[order(nchar(words_to_merge),decreasing=T)]
+# words_to_merge <- read.delim("data/words_to_merge.txt", header=F)$V1
+# words_to_merge <- sapply(words_to_merge, function(x) paste("\\b",x,"\\b",sep=""))
+# words_to_merge <- words_to_merge[order(nchar(words_to_merge),decreasing=T)]
+# ---------------------------------------------------------------------------- #
 
 # Il ciclo serve solo a capire a che punto e' il procedimento.
 for(i in unique(tw$partito)){
@@ -58,11 +63,15 @@ for(i in unique(tw$partito)){
                                 removeUnderscore = FALSE)
     # Rimuovo url, che sono codificati con la stringa "wwwurlwww" da normalizzaTesti
     tt$tweet <- str_remove(tt$tweet, "wwwurlwww")
+    
+    # ------------------------------------------------------------------------ #
     # Considero come alcuni gruppi di parole come singole entita'; a livello
     # pratico, unisco le parole sostituendo gli spazi con "_"
-    for (w in words_to_merge) {
-      tt$tweet <- str_replace_all(tt$tweet, w, str_replace_all(w," ","_"))
-    }
+    #for (w in words_to_merge) {
+    #  tt$tweet <- str_replace_all(tt$tweet, w, str_replace_all(w," ","_"))
+    #}
+    # ------------------------------------------------------------------------ #
+    
     # Utilizzo le stopwords contenute in "stopword-it.txt" per rimuovere le
     # parole non utili per l'analisi del testo.
     tt$tweet <- stringr::str_replace_all(tt$tweet, stop_words, "")
@@ -73,18 +82,17 @@ for(i in unique(tw$partito)){
     tt$tweet <- gsub("\\b[0-9\\W]+\\b", "", tt$tweet)
     # Sostituisco spazi multipli con un singolo spazio
     tt$tweet <- str_squish(tt$tweet)
+    # Sostituisco i tweet originali con i nuovi tweet normalizzati
+    tw$tweet[tw$username==j] <- tt$tweet
+    # ------------------------------------------------------------------------ #
     # stemming
     tt$tweet <- sapply(str_split(tt$tweet," "),
                        function(x) paste(char_wordstem(x,language="ita"),collapse=" "))
-    # Infine, sostituisco i tweet originali con i nuovi tweet normalizzati
-    tw$tweet[tw$username==j] <- tt$tweet
+    # Sostituisco i tweet originali con i nuovi tweet normalizzati (stemming)
+    tw$tweet_stem[tw$username==j] <- tt$tweet
   }
   cat("\n")
 }
-
-# ---------------------------------------------------------------------------- #
-
-rm(list=c("i", "j", "w", "tt", "vocabolarioEmoteSorted", "stop_words", "words_to_merge"))
 
 # ---------------------------------------------------------------------------- #
 

@@ -16,7 +16,6 @@ library(quanteda.textmodels)
 
 rm(list=ls())
 load("data/02_tweets_stem.RData")
-tw <- tw[!(tw$username=="LegaSalvini"),]
 tw <- tw[tw$reply_to==0,]
 
 # Riduco dimensionalita' per i test

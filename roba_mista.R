@@ -88,7 +88,7 @@ grid.arrange(p1, p2, nrow=2, ncol=1, heights=c(5,5))
 
 load("Tweets.RData")
 
-hashtag_to_fix <- unique(tweets$hashtags)
+hashtag_to_fix <- unique(tw$hashtags)
 hashtag_list <- c()
 for (h in hashtag_to_fix) {
   if (h=="[]") { next }
@@ -98,7 +98,7 @@ for (h in hashtag_to_fix) {
     # (*)
     #h_tmp <- lapply(h_tmp, function(x) paste(x,length(h_tmp[[1]]),sep="_"))
   }
-  h_tmp <- lapply(h_tmp, trimws)[[1]]
+  h_tmp <- sapply(h_tmp, trimws)
   hashtag_list <- c(hashtag_list, h_tmp)
 }
 sort(table(hashtag_list), decreasing=T)[1:40]
