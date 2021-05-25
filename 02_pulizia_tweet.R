@@ -6,7 +6,9 @@
 
 rm(list=ls())
 load("data/01_tweets.RData")
-# aggiungo colonna degli 
+# creo colonna in cui slavare il tweet origale
+tw$tweet_original <- tw$tweet
+# aggiungo colonna con gli stem 
 tw$tweet_stem <- NA
 
 # ---------------------------------------------------------------------------- #

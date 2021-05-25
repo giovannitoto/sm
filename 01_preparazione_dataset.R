@@ -69,6 +69,8 @@ htags_count <- lapply(htags_count, trimws)
 htags_count <- lapply(htags_count, length)
 htags_count <- unlist(htags_count)
 tw$hashtags_count <- htags_count
+# conto il numero di caratteri
+tw$tweet_nchar <- nchar(tw$tweet)
 
 # ---------------------------------------------------------------------------- #
 

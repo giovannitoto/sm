@@ -14307,9 +14307,14 @@ a.anchor-link {
 <li>[LSP] Erika Stefani (erikastefani71) ha solo 10 tweet</li>
 <li>[PD] Walter Verini (VeriniWalter) non posta nulla dal 2018</li>
 </ul>
-<p>Persone da valutare:</p>
+<p>Persone rimosse per bilanciare il dataset:</p>
 <ul>
-<li>[M5S] Stefano Patuanelli (SPatuanelli) ha solo 49 tweet</li>
+<li>[FdI] "FratellidItalia": "Fratelli d'Italia"</li>
+<li>[M5S] "SPatuanelli": "Stefano Patuanelli"</li>
+<li>[LSP] "MolinariRik": "Riccardo Molinari"</li>
+<li>[LSP] "FabriCecchetti": "Fabrizio Cecchetti"</li>
+<li>[FdI] "Ignazio_LaRussa": "Ignazio La Russa"</li>
+<li>[FdI] "RaffaeleFitto": "Raffaele Fitto"</li>
 </ul>
 
 </div>
@@ -14322,14 +14327,12 @@ a.anchor-link {
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Movimento 5 Stelle</span>
 <span class="n">M5S</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Mov5Stelle&quot;</span><span class="p">:</span> <span class="s2">&quot;MoVimento 5 Stelle&quot;</span><span class="p">,</span>
        <span class="s2">&quot;luigidimaio&quot;</span><span class="p">:</span> <span class="s2">&quot;Luigi di Maio&quot;</span><span class="p">,</span>
-       <span class="s2">&quot;SPatuanelli&quot;</span><span class="p">:</span> <span class="s2">&quot;Stefano Patuanelli&quot;</span><span class="p">,</span>
        <span class="s2">&quot;Roberto_Fico&quot;</span><span class="p">:</span> <span class="s2">&quot;Roberto Fico&quot;</span><span class="p">,</span>
        <span class="s2">&quot;LauraBottici&quot;</span><span class="p">:</span> <span class="s2">&quot;Laura Bottici&quot;</span><span class="p">,</span>
-       <span class="s2">&quot;vitocrimi&quot;</span><span class="p">:</span> <span class="s2">&quot;Vito Crimi&quot;</span><span class="p">}</span>
+       <span class="s2">&quot;vitocrimi&quot;</span><span class="p">:</span> <span class="s2">&quot;Vito Crimi&quot;</span><span class="p">,</span>
+       <span class="s2">&quot;virginiaraggi&quot;</span><span class="p">:</span> <span class="s2">&quot;Virginia Raggi&quot;</span><span class="p">}</span>
 <span class="c1"># Lega - Salvini Premier</span>
 <span class="n">LSP</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;matteosalvinimi&quot;</span><span class="p">:</span> <span class="s2">&quot;Matteo Salvini&quot;</span><span class="p">,</span>
-       <span class="s2">&quot;MolinariRik&quot;</span><span class="p">:</span> <span class="s2">&quot;Riccardo Molinari&quot;</span><span class="p">,</span>
-       <span class="s2">&quot;FabriCecchetti&quot;</span><span class="p">:</span> <span class="s2">&quot;Fabrizio Cecchetti&quot;</span><span class="p">,</span>
        <span class="s2">&quot;Fontana3Lorenzo&quot;</span><span class="p">:</span> <span class="s2">&quot;Lorenzo Fontana&quot;</span><span class="p">,</span>
        <span class="s2">&quot;massimogara&quot;</span><span class="p">:</span> <span class="s2">&quot;Massimo Garavaglia&quot;</span><span class="p">}</span>
 <span class="c1"># Partito Democratico</span>
@@ -14341,7 +14344,9 @@ a.anchor-link {
       <span class="s2">&quot;lauraboldrini&quot;</span><span class="p">:</span> <span class="s2">&quot;Laura Boldrini&quot;</span><span class="p">,</span>
       <span class="s2">&quot;PaoloGentiloni&quot;</span><span class="p">:</span> <span class="s2">&quot;Paolo Gentiloni&quot;</span><span class="p">,</span>
       <span class="s2">&quot;robersperanza&quot;</span><span class="p">:</span> <span class="s2">&quot;Roberto Speranza&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;dariofrance&quot;</span><span class="p">:</span> <span class="s2">&quot;Dario Franceschini&quot;</span><span class="p">}</span>
+      <span class="s2">&quot;dariofrance&quot;</span><span class="p">:</span> <span class="s2">&quot;Dario Franceschini&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;nzingaretti&quot;</span><span class="p">:</span> <span class="s2">&quot;Nicola Zingaretti&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;ZanAlessandro&quot;</span><span class="p">:</span> <span class="s2">&quot;Alessandro Zan&quot;</span><span class="p">}</span>
 <span class="c1"># Forza Italia</span>
 <span class="n">FI</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;forza_italia&quot;</span><span class="p">:</span> <span class="s2">&quot;Forza Italia&quot;</span><span class="p">,</span>
       <span class="s2">&quot;berlusconi&quot;</span><span class="p">:</span> <span class="s2">&quot;Silvio Berlusconi&quot;</span><span class="p">,</span>
@@ -14352,12 +14357,9 @@ a.anchor-link {
       <span class="s2">&quot;gasparripdl&quot;</span><span class="p">:</span> <span class="s2">&quot;Maurizio Gasparri&quot;</span><span class="p">,</span>
       <span class="s2">&quot;BerniniAM&quot;</span><span class="p">:</span> <span class="s2">&quot;Anna Maria Bernini&quot;</span><span class="p">}</span>
 <span class="c1"># Fratelli d&#39;Italia</span>
-<span class="n">FdI</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;FratellidItalia&quot;</span><span class="p">:</span> <span class="s2">&quot;Fratelli d&#39;Italia&quot;</span><span class="p">,</span>
-       <span class="s2">&quot;GiorgiaMeloni&quot;</span><span class="p">:</span> <span class="s2">&quot;Giorgia Meloni&quot;</span><span class="p">,</span>
-       <span class="s2">&quot;Ignazio_LaRussa&quot;</span><span class="p">:</span> <span class="s2">&quot;Ignazio La Russa&quot;</span><span class="p">,</span>
+<span class="n">FdI</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;GiorgiaMeloni&quot;</span><span class="p">:</span> <span class="s2">&quot;Giorgia Meloni&quot;</span><span class="p">,</span>
        <span class="s2">&quot;GuidoCrosetto&quot;</span><span class="p">:</span> <span class="s2">&quot;Guido Crosetto&quot;</span><span class="p">,</span>
-       <span class="s2">&quot;DSantanche&quot;</span><span class="p">:</span> <span class="s2">&quot;Daniela Santanchè&quot;</span><span class="p">,</span>
-       <span class="s2">&quot;RaffaeleFitto&quot;</span><span class="p">:</span> <span class="s2">&quot;Raffaele Fitto&quot;</span><span class="p">}</span>
+       <span class="s2">&quot;DSantanche&quot;</span><span class="p">:</span> <span class="s2">&quot;Daniela Santanchè&quot;</span><span class="p">}</span>
 <span class="c1"># Italia Viva</span>
 <span class="n">IV</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;ItaliaViva&quot;</span><span class="p">:</span> <span class="s2">&quot;Italia Viva&quot;</span><span class="p">,</span>
       <span class="s2">&quot;matteorenzi&quot;</span><span class="p">:</span> <span class="s2">&quot;Matteo Renzi&quot;</span><span class="p">,</span>
@@ -14408,7 +14410,7 @@ a.anchor-link {
             <span class="n">c</span><span class="o">.</span><span class="n">Username</span> <span class="o">=</span> <span class="n">user_name</span>
             <span class="n">c</span><span class="o">.</span><span class="n">User_full</span> <span class="o">=</span> <span class="kc">True</span>         
             <span class="n">c</span><span class="o">.</span><span class="n">Since</span> <span class="o">=</span> <span class="s2">&quot;2020-06-03&quot;</span>
-            <span class="n">c</span><span class="o">.</span><span class="n">Until</span> <span class="o">=</span> <span class="s2">&quot;2021-05-23&quot;</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">Until</span> <span class="o">=</span> <span class="s2">&quot;2021-05-15&quot;</span>
 
             <span class="n">c</span><span class="o">.</span><span class="n">Lowercase</span> <span class="o">=</span> <span class="kc">True</span> <span class="c1"># rende tutto minuscolo</span>
 
@@ -14449,185 +14451,173 @@ a.anchor-link {
 
 
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>M5S: [&#39;Mov5Stelle&#39;, &#39;luigidimaio&#39;, &#39;SPatuanelli&#39;, &#39;Roberto_Fico&#39;, &#39;LauraBottici&#39;, &#39;vitocrimi&#39;]
-[1/6] 2021-05-24 22:26:13
+<pre>M5S: [&#39;Mov5Stelle&#39;, &#39;luigidimaio&#39;, &#39;Roberto_Fico&#39;, &#39;LauraBottici&#39;, &#39;vitocrimi&#39;, &#39;virginiaraggi&#39;]
+[1/6] 2021-05-25 10:53:46
 [!] No more data! Scraping will stop now.
 found 0 deleted tweets in this search.
-[+] Finished: Successfully collected 1875 Tweets from @Mov5Stelle.
-[2/6] 2021-05-24 22:27:00
+[+] Finished: Successfully collected 1807 Tweets from @Mov5Stelle.
+[2/6] 2021-05-25 10:54:08
 [!] No more data! Scraping will stop now.
 found 0 deleted tweets in this search.
-[+] Finished: Successfully collected 447 Tweets from @luigidimaio.
-[3/6] 2021-05-24 22:27:13
+[+] Finished: Successfully collected 436 Tweets from @luigidimaio.
+[3/6] 2021-05-25 10:54:13
 [!] No more data! Scraping will stop now.
 found 0 deleted tweets in this search.
-[+] Finished: Successfully collected 24 Tweets from @SPatuanelli.
-[4/6] 2021-05-24 22:27:21
+[+] Finished: Successfully collected 178 Tweets from @Roberto_Fico.
+[4/6] 2021-05-25 10:54:16
 [!] No more data! Scraping will stop now.
 found 0 deleted tweets in this search.
-[+] Finished: Successfully collected 184 Tweets from @Roberto_Fico.
-[5/6] 2021-05-24 22:27:31
-[!] No more data! Scraping will stop now.
-found 0 deleted tweets in this search.
-[+] Finished: Successfully collected 96 Tweets from @LauraBottici.
-[6/6] 2021-05-24 22:27:38
+[+] Finished: Successfully collected 93 Tweets from @LauraBottici.
+[5/6] 2021-05-25 10:54:18
 [!] No more data! Scraping will stop now.
 found 0 deleted tweets in this search.
 [+] Finished: Successfully collected 131 Tweets from @vitocrimi.
+[6/6] 2021-05-25 10:54:20
+[!] No more data! Scraping will stop now.
+found 0 deleted tweets in this search.
+[+] Finished: Successfully collected 1018 Tweets from @virginiaraggi.
 
-LSP: [&#39;matteosalvinimi&#39;, &#39;MolinariRik&#39;, &#39;FabriCecchetti&#39;, &#39;Fontana3Lorenzo&#39;, &#39;massimogara&#39;]
-[1/5] 2021-05-24 22:27:44
+LSP: [&#39;matteosalvinimi&#39;, &#39;Fontana3Lorenzo&#39;, &#39;massimogara&#39;]
+[1/3] 2021-05-25 10:54:33
 [!] No more data! Scraping will stop now.
 found 0 deleted tweets in this search.
-[+] Finished: Successfully collected 7380 Tweets from @matteosalvinimi.
-[2/5] 2021-05-24 22:30:15
+[+] Finished: Successfully collected 7328 Tweets from @matteosalvinimi.
+[2/3] 2021-05-25 10:55:50
 [!] No more data! Scraping will stop now.
 found 0 deleted tweets in this search.
-[+] Finished: Successfully collected 173 Tweets from @MolinariRik.
-[3/5] 2021-05-24 22:30:23
+[+] Finished: Successfully collected 1067 Tweets from @Fontana3Lorenzo.
+[3/3] 2021-05-25 10:56:02
 [!] No more data! Scraping will stop now.
 found 0 deleted tweets in this search.
-[+] Finished: Successfully collected 978 Tweets from @FabriCecchetti.
-[4/5] 2021-05-24 22:30:45
-[!] No more data! Scraping will stop now.
-found 0 deleted tweets in this search.
-[+] Finished: Successfully collected 1088 Tweets from @Fontana3Lorenzo.
-[5/5] 2021-05-24 22:31:09
-[!] No more data! Scraping will stop now.
-found 0 deleted tweets in this search.
-[+] Finished: Successfully collected 982 Tweets from @massimogara.
+[+] Finished: Successfully collected 975 Tweets from @massimogara.
 
-PD: [&#39;pdnetwork&#39;, &#39;EnricoLetta&#39;, &#39;itinagli&#39;, &#39;peppeprovenzano&#39;, &#39;F_Boccia&#39;, &#39;lauraboldrini&#39;, &#39;PaoloGentiloni&#39;, &#39;robersperanza&#39;, &#39;dariofrance&#39;]
-[1/9] 2021-05-24 22:31:29
+PD: [&#39;pdnetwork&#39;, &#39;EnricoLetta&#39;, &#39;itinagli&#39;, &#39;peppeprovenzano&#39;, &#39;F_Boccia&#39;, &#39;lauraboldrini&#39;, &#39;PaoloGentiloni&#39;, &#39;robersperanza&#39;, &#39;dariofrance&#39;, &#39;nzingaretti&#39;, &#39;ZanAlessandro&#39;]
+[1/11] 2021-05-25 10:56:15
 [!] No more data! Scraping will stop now.
 found 0 deleted tweets in this search.
-[+] Finished: Successfully collected 1204 Tweets from @pdnetwork.
-[2/9] 2021-05-24 22:31:54
+[+] Finished: Successfully collected 1185 Tweets from @pdnetwork.
+[2/11] 2021-05-25 10:56:30
 [!] No more data! Scraping will stop now.
 found 0 deleted tweets in this search.
-[+] Finished: Successfully collected 1074 Tweets from @EnricoLetta.
-[3/9] 2021-05-24 22:32:22
+[+] Finished: Successfully collected 1043 Tweets from @EnricoLetta.
+[3/11] 2021-05-25 10:56:45
 [!] No more data! Scraping will stop now.
 found 0 deleted tweets in this search.
-[+] Finished: Successfully collected 414 Tweets from @itinagli.
-[4/9] 2021-05-24 22:32:32
+[+] Finished: Successfully collected 405 Tweets from @itinagli.
+[4/11] 2021-05-25 10:56:50
 [!] No more data! Scraping will stop now.
 found 0 deleted tweets in this search.
-[+] Finished: Successfully collected 290 Tweets from @peppeprovenzano.
-[5/9] 2021-05-24 22:32:47
+[+] Finished: Successfully collected 278 Tweets from @peppeprovenzano.
+[5/11] 2021-05-25 10:56:55
 [!] No more data! Scraping will stop now.
 found 0 deleted tweets in this search.
-[+] Finished: Successfully collected 152 Tweets from @F_Boccia.
-[6/9] 2021-05-24 22:32:53
+[+] Finished: Successfully collected 150 Tweets from @F_Boccia.
+[6/11] 2021-05-25 10:56:58
 [!] No more data! Scraping will stop now.
 found 0 deleted tweets in this search.
-[+] Finished: Successfully collected 431 Tweets from @lauraboldrini.
-[7/9] 2021-05-24 22:33:06
+[+] Finished: Successfully collected 420 Tweets from @lauraboldrini.
+[7/11] 2021-05-25 10:57:04
 [!] No more data! Scraping will stop now.
 found 0 deleted tweets in this search.
-[+] Finished: Successfully collected 377 Tweets from @PaoloGentiloni.
-[8/9] 2021-05-24 22:33:22
+[+] Finished: Successfully collected 369 Tweets from @PaoloGentiloni.
+[8/11] 2021-05-25 10:57:09
 [!] No more data! Scraping will stop now.
 found 0 deleted tweets in this search.
-[+] Finished: Successfully collected 185 Tweets from @robersperanza.
-[9/9] 2021-05-24 22:33:32
+[+] Finished: Successfully collected 181 Tweets from @robersperanza.
+[9/11] 2021-05-25 10:57:12
 [!] No more data! Scraping will stop now.
 found 0 deleted tweets in this search.
-[+] Finished: Successfully collected 89 Tweets from @dariofrance.
+[+] Finished: Successfully collected 85 Tweets from @dariofrance.
+[10/11] 2021-05-25 10:57:14
+[!] No more data! Scraping will stop now.
+found 0 deleted tweets in this search.
+[+] Finished: Successfully collected 485 Tweets from @nzingaretti.
+[11/11] 2021-05-25 10:57:20
+[!] No more data! Scraping will stop now.
+found 0 deleted tweets in this search.
+[+] Finished: Successfully collected 149 Tweets from @ZanAlessandro.
 
 FI: [&#39;forza_italia&#39;, &#39;berlusconi&#39;, &#39;Antonio_Tajani&#39;, &#39;msgelmini&#39;, &#39;mara_carfagna&#39;, &#39;renatobrunetta&#39;, &#39;gasparripdl&#39;, &#39;BerniniAM&#39;]
-[1/8] 2021-05-24 22:33:37
+[1/8] 2021-05-25 10:57:23
 [!] No more data! Scraping will stop now.
 found 0 deleted tweets in this search.
-[+] Finished: Successfully collected 645 Tweets from @forza_italia.
-[2/8] 2021-05-24 22:33:53
+[+] Finished: Successfully collected 621 Tweets from @forza_italia.
+[2/8] 2021-05-25 10:57:30
 [!] No more data! Scraping will stop now.
 found 0 deleted tweets in this search.
 [+] Finished: Successfully collected 616 Tweets from @berlusconi.
-[3/8] 2021-05-24 22:34:09
+[3/8] 2021-05-25 10:57:37
 [!] No more data! Scraping will stop now.
 found 0 deleted tweets in this search.
-[+] Finished: Successfully collected 1274 Tweets from @Antonio_Tajani.
-[4/8] 2021-05-24 22:34:37
+[+] Finished: Successfully collected 1240 Tweets from @Antonio_Tajani.
+[4/8] 2021-05-25 10:57:51
 [!] No more data! Scraping will stop now.
 found 0 deleted tweets in this search.
-[+] Finished: Successfully collected 701 Tweets from @msgelmini.
-[5/8] 2021-05-24 22:34:59
+[+] Finished: Successfully collected 690 Tweets from @msgelmini.
+[5/8] 2021-05-25 10:58:00
 [!] No more data! Scraping will stop now.
 found 0 deleted tweets in this search.
-[+] Finished: Successfully collected 550 Tweets from @mara_carfagna.
-[6/8] 2021-05-24 22:35:17
+[+] Finished: Successfully collected 542 Tweets from @mara_carfagna.
+[6/8] 2021-05-25 10:58:07
 [!] No more data! Scraping will stop now.
 found 0 deleted tweets in this search.
-[+] Finished: Successfully collected 1463 Tweets from @renatobrunetta.
-[7/8] 2021-05-24 22:35:51
+[+] Finished: Successfully collected 1429 Tweets from @renatobrunetta.
+[7/8] 2021-05-25 10:58:24
 [!] No more data! Scraping will stop now.
 found 0 deleted tweets in this search.
-[+] Finished: Successfully collected 1390 Tweets from @gasparripdl.
-[8/8] 2021-05-24 22:36:19
+[+] Finished: Successfully collected 1358 Tweets from @gasparripdl.
+[8/8] 2021-05-25 10:58:39
 [!] No more data! Scraping will stop now.
 found 0 deleted tweets in this search.
-[+] Finished: Successfully collected 438 Tweets from @BerniniAM.
+[+] Finished: Successfully collected 429 Tweets from @BerniniAM.
 
-FdI: [&#39;FratellidItalia&#39;, &#39;GiorgiaMeloni&#39;, &#39;Ignazio_LaRussa&#39;, &#39;GuidoCrosetto&#39;, &#39;DSantanche&#39;, &#39;RaffaeleFitto&#39;]
-[1/6] 2021-05-24 22:36:33
+FdI: [&#39;GiorgiaMeloni&#39;, &#39;GuidoCrosetto&#39;, &#39;DSantanche&#39;]
+[1/3] 2021-05-25 10:58:44
 [!] No more data! Scraping will stop now.
 found 0 deleted tweets in this search.
-[+] Finished: Successfully collected 3957 Tweets from @FratellidItalia.
-[2/6] 2021-05-24 22:37:58
+[+] Finished: Successfully collected 1548 Tweets from @GiorgiaMeloni.
+[2/3] 2021-05-25 10:59:02
 [!] No more data! Scraping will stop now.
 found 0 deleted tweets in this search.
-[+] Finished: Successfully collected 1585 Tweets from @GiorgiaMeloni.
-[3/6] 2021-05-24 22:38:31
+[+] Finished: Successfully collected 8276 Tweets from @GuidoCrosetto.
+[3/3] 2021-05-25 11:00:18
 [!] No more data! Scraping will stop now.
 found 0 deleted tweets in this search.
-[+] Finished: Successfully collected 177 Tweets from @Ignazio_LaRussa.
-[4/6] 2021-05-24 22:38:35
-[!] No more data! Scraping will stop now.
-found 0 deleted tweets in this search.
-[+] Finished: Successfully collected 8505 Tweets from @GuidoCrosetto.
-[5/6] 2021-05-24 22:41:19
-[!] No more data! Scraping will stop now.
-found 0 deleted tweets in this search.
-[+] Finished: Successfully collected 1513 Tweets from @DSantanche.
-[6/6] 2021-05-24 22:42:00
-[!] No more data! Scraping will stop now.
-found 0 deleted tweets in this search.
-[+] Finished: Successfully collected 711 Tweets from @RaffaeleFitto.
+[+] Finished: Successfully collected 1482 Tweets from @DSantanche.
 
 IV: [&#39;ItaliaViva&#39;, &#39;matteorenzi&#39;, &#39;meb&#39;, &#39;Ettore_Rosato&#39;, &#39;TeresaBellanova&#39;, &#39;elenabonetti&#39;, &#39;davidefaraone&#39;]
-[1/7] 2021-05-24 22:42:16
+[1/7] 2021-05-25 11:00:36
 [!] No more data! Scraping will stop now.
 found 0 deleted tweets in this search.
-[+] Finished: Successfully collected 3948 Tweets from @ItaliaViva.
-[2/7] 2021-05-24 22:43:56
+[+] Finished: Successfully collected 3848 Tweets from @ItaliaViva.
+[2/7] 2021-05-25 11:01:15
 [!] No more data! Scraping will stop now.
 found 0 deleted tweets in this search.
-[+] Finished: Successfully collected 773 Tweets from @matteorenzi.
-[3/7] 2021-05-24 22:44:16
+[+] Finished: Successfully collected 769 Tweets from @matteorenzi.
+[3/7] 2021-05-25 11:01:24
 [!] No more data! Scraping will stop now.
 found 0 deleted tweets in this search.
-[+] Finished: Successfully collected 201 Tweets from @meb.
-[4/7] 2021-05-24 22:44:23
+[+] Finished: Successfully collected 196 Tweets from @meb.
+[4/7] 2021-05-25 11:01:27
 [!] No more data! Scraping will stop now.
 found 0 deleted tweets in this search.
-[+] Finished: Successfully collected 1020 Tweets from @Ettore_Rosato.
-[5/7] 2021-05-24 22:44:53
+[+] Finished: Successfully collected 988 Tweets from @Ettore_Rosato.
+[5/7] 2021-05-25 11:01:40
 [!] No more data! Scraping will stop now.
 found 0 deleted tweets in this search.
-[+] Finished: Successfully collected 1138 Tweets from @TeresaBellanova.
-[6/7] 2021-05-24 22:45:21
+[+] Finished: Successfully collected 1118 Tweets from @TeresaBellanova.
+[6/7] 2021-05-25 11:01:55
 [!] No more data! Scraping will stop now.
 found 0 deleted tweets in this search.
-[+] Finished: Successfully collected 635 Tweets from @elenabonetti.
-[7/7] 2021-05-24 22:45:39
+[+] Finished: Successfully collected 618 Tweets from @elenabonetti.
+[7/7] 2021-05-25 11:02:03
 [!] No more data! Scraping will stop now.
 found 0 deleted tweets in this search.
-[+] Finished: Successfully collected 259 Tweets from @davidefaraone.
+[+] Finished: Successfully collected 244 Tweets from @davidefaraone.
 
 ******************************
-  Start: 2021-05-24 22:26:13
-    End: 2021-05-24 22:45:51
+  Start: 2021-05-25 10:53:46
+    End: 2021-05-25 11:02:06
 ******************************
 </pre>
 </div>
@@ -14675,49 +14665,46 @@ found 0 deleted tweets in this search.
 
 
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>Mov5Stelle          (1875, 39)
-luigidimaio          (447, 39)
-SPatuanelli           (24, 39)
-Roberto_Fico         (184, 39)
-LauraBottici          (96, 39)
+<pre>Mov5Stelle          (1807, 39)
+luigidimaio          (436, 39)
+Roberto_Fico         (178, 39)
+LauraBottici          (93, 39)
 vitocrimi            (131, 39)
-matteosalvinimi     (7380, 39)
-MolinariRik          (173, 39)
-FabriCecchetti       (978, 39)
-Fontana3Lorenzo     (1088, 39)
-massimogara          (982, 39)
-pdnetwork           (1204, 39)
-EnricoLetta         (1074, 39)
-itinagli             (414, 39)
-peppeprovenzano      (290, 39)
-F_Boccia             (152, 39)
-lauraboldrini        (431, 39)
-PaoloGentiloni       (377, 39)
-robersperanza        (185, 39)
-dariofrance           (89, 39)
-forza_italia         (645, 39)
+virginiaraggi       (1018, 39)
+matteosalvinimi     (7328, 39)
+Fontana3Lorenzo     (1067, 39)
+massimogara          (975, 39)
+pdnetwork           (1185, 39)
+EnricoLetta         (1043, 39)
+itinagli             (405, 39)
+peppeprovenzano      (278, 39)
+F_Boccia             (150, 39)
+lauraboldrini        (420, 39)
+PaoloGentiloni       (369, 39)
+robersperanza        (181, 39)
+dariofrance           (85, 39)
+nzingaretti          (485, 39)
+ZanAlessandro        (149, 39)
+forza_italia         (621, 39)
 berlusconi           (616, 39)
-Antonio_Tajani      (1274, 39)
-msgelmini            (701, 39)
-mara_carfagna        (550, 39)
-renatobrunetta      (1463, 39)
-gasparripdl         (1390, 39)
-BerniniAM            (438, 39)
-FratellidItalia     (3957, 39)
-GiorgiaMeloni       (1585, 39)
-Ignazio_LaRussa      (177, 39)
-GuidoCrosetto       (8505, 39)
-DSantanche          (1513, 39)
-RaffaeleFitto        (711, 39)
-ItaliaViva          (3948, 39)
-matteorenzi          (773, 39)
-meb                  (201, 39)
-Ettore_Rosato       (1020, 39)
-TeresaBellanova     (1138, 39)
-elenabonetti         (635, 39)
-davidefaraone        (259, 39)
+Antonio_Tajani      (1240, 39)
+msgelmini            (690, 39)
+mara_carfagna        (542, 39)
+renatobrunetta      (1429, 39)
+gasparripdl         (1358, 39)
+BerniniAM            (429, 39)
+GiorgiaMeloni       (1548, 39)
+GuidoCrosetto       (8276, 39)
+DSantanche          (1482, 39)
+ItaliaViva          (3848, 39)
+matteorenzi          (769, 39)
+meb                  (196, 39)
+Ettore_Rosato        (988, 39)
+TeresaBellanova     (1118, 39)
+elenabonetti         (618, 39)
+davidefaraone        (244, 39)
 ------------------------------
-                   (49073, 39)
+                   (43795, 39)
 </pre>
 </div>
 </div>
