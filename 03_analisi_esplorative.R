@@ -210,33 +210,15 @@ tw$hour[tw$hour==0] <- 24
 tw$hour[tw$hour==1] <- 25
 tw$hour[tw$hour==2] <- 26
 
-tweetsPD <- tw[tw$partito=="PD",]
-tweetsFDI <- tw[tw$partito=="FdI",]
-tweetsFI <- tw[tw$partito=="FI",]
-tweetsIV <- tw[tw$partito=="IV",]
-tweetsLSP <- tw[tw$partito=="LSP",]
-tweetsM5S <- tw[tw$partito=="M5S",]
-
 par(mfrow=c(1,2))
 
-plot(table(tweetsIV$hour), type="b", bty="l" ,
-     xlab="hours" , ylab="Frequenza" ,
-     col=1 , lwd=3 , pch=17, main="Italia Viva", xlim=c(6,26), ylim=c(0,1800))
-lines(table(tweetsFDI$hour), type="b" , bty="l" ,
-      xlab="hours" , ylab="Frequenza" , col=2,
-      lwd=3 , pch=17, main="Fratelli d'Italia")
-lines(table(tweetsPD$hour), type="b" , bty="l" , xlab="hours" , ylab="Frequenza" ,
-      col=3 , lwd=3 , pch=17, main="Partito Democratico")
-lines(table(tweetsFI$hour), type="b" , bty="l" , xlab="hours" , ylab="Frequenza" ,
-      col=4 , lwd=3 , pch=17, main="Forza Italia")
-lines(table(tweetsLSP$hour), type="b" , bty="l" , xlab="hours" , ylab="Frequenza" ,
-      col=5 , lwd=3 , pch=17, main="Lega")
-lines(table(tweetsM5S$hour), type="b" , bty="l" , xlab="hours" , ylab="Frequenza" ,
-      col=6, lwd=3 , pch=17, main="Movimento 5 stelle")
-
+matplot(table(tw$hour, tw$partito), type="b", bty="l" ,
+        xlab="hours" , ylab="Frequenza", lwd=3 , pch=17, main="Italia Viva")
+matplot(prop.table(table(tw$hour, tw$partito)), type="b", bty="l",
+        xlab="hours" , ylab="Frequenza", lwd=3 , pch=17, main="Italia Viva")
 
 legend("topright", 
-       legend = c("IV", "FDI", "PD", "FI", "LSP", "MS5"), 
+       legend = c("FdI", "FI", "IV", "LSP", "M5S", "PD"), 
        col = 1:6, 
        pch = 17, 
        bty = "n", 
@@ -245,21 +227,6 @@ legend("topright",
        text.col = "black", 
        horiz = F , 
        inset = c(0.01, 0.1))
-
-plot(table(tweetsIV$hour) %>% prop.table, type="b", bty="l" ,
-     xlab="hours" , ylab="Frequenza Relativa" ,
-     col=1 , lwd=3 , pch=17, main="Italia Viva", xlim=c(6,26))
-lines(table(tweetsFDI$hour) %>% prop.table, type="b" , bty="l" ,
-         xlab="hours" , ylab="Frequenza Relativa" , col=2,
-         lwd=3 , pch=17, main="Fratelli d'Italia")
-lines(table(tweetsPD$hour) %>% prop.table, type="b" , bty="l" , xlab="hours" , ylab="Frequenza" ,
-      col=3 , lwd=3 , pch=17, main="Partito Democratico")
-lines(table(tweetsFI$hour) %>% prop.table, type="b" , bty="l" , xlab="hours" , ylab="Frequenza" ,
-      col=4 , lwd=3 , pch=17, main="Forza Italia")
-lines(table(tweetsLSP$hour) %>% prop.table, type="b" , bty="l" , xlab="hours" , ylab="Frequenza" ,
-      col=5 , lwd=3 , pch=17, main="Lega")
-lines(table(tweetsM5S$hour) %>% prop.table, type="b" , bty="l" , xlab="hours" , ylab="Frequenza" ,
-      col=6, lwd=3 , pch=17, main="Movimento 5 stelle")
 
 
 # ---------------------------------------------------------------------------- #
