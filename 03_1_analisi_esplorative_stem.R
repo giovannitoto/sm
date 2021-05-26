@@ -6,6 +6,8 @@
 # - Interpretazione dei gruppi guardando le parole più importanti
 #       - Importanza per degree e per betweenness
 
+# - Analisi delle corrispondenze con le parole più importanti
+
 # ---------------------------------------------------------------------------- #
 
 library(dplyr)
@@ -22,46 +24,6 @@ library(ggraph)
 rm(list=ls())
 setwd("C:/Users/Emanuele/Documenti/GitHub/sm")
 load("data/02_tweets_stem.RData")
-
-# ---------------------------------------------------------------------------- #
-
-for (part in unique(tw$partito)) {
-  tmp_tw <- tw[tw$partito==part,]
-  cat(part, "\n")
-  cat("Numero tweet:", nrow(tmp_tw), "\n")
-  cat("Numero tweet risposta:", nrow(tmp_tw[tmp_tw$reply_to==1,]), "\n")
-  cat("% tweet risposta:", mean(tmp_tw$reply_to==1), "\n")
-  # contenuti non testuali (link esterni, img, video)
-  cat("\n")
-  cat("% tweet con immagini e/o video:", mean(tmp_tw$video==1), "\n")
-  cat("% tweet con link esterni:", mean(tmp_tw$urls==1), "\n")
-  # like, reply, retweet totali
-  cat("\n")
-  cat("Numero like totali:", sum(tw$nlikes), "\n")
-  cat("Numero di risposte tot. ai tweet:", sum(tmp_tw$nreplies), "\n")
-  cat("Numero di retweet totali:", sum(tmp_tw$nretweets), "\n")
-  # like, reply, retweet medi per tweet (per confrontare partiti)
-  cat("\n")
-  cat("Numero di like medi a un tweet:", mean(tmp_tw$nlikes), "\n")
-  cat("Num. di risposte medie a un tweet:", mean(tmp_tw$nreplies), "\n")
-  cat("Num. di retweet medi per un tweet:", mean(tmp_tw$nretweets), "\n")
-  # like, reply, retweet (mediana)
-  cat("\n")
-  cat("Num. di like mediani per un tweet:", median(tmp_tw$nlikes), "\n")
-  cat("Num. di risposte mediane per un tweet:", median(tmp_tw$nreplies), "\n")
-  cat("Num. di retweet mediani per un tweet:", median(tmp_tw$nretweets), "\n")
-  # like, reply, retweet (massimo)
-  cat("\n")
-  cat("Num. di like massimo per un tweet:", max(tmp_tw$nlikes), "\n")
-  cat("Num. di risposte massimo per un tweet:", max(tmp_tw$nreplies), "\n")
-  cat("Num. di retweet massimo per un tweet:", max(tmp_tw$nretweets), "\n")
-  # hashtags
-  cat("\n")
-  cat("Numero di hashtag usati:", sum(tmp_tw$hashtags_count), "\n")
-  cat("Numero di hashtag medi per tweet:", mean(tmp_tw$hashtags_count), "\n")
-  cat("Numero di hashtag mediano per tweet:", median(tmp_tw$hashtags_count), "\n")
-  cat("\n------------------------------------------------\n\n")
-}
 
 # ---------------------------------------------------------------------------- #
 
@@ -135,7 +97,6 @@ g2 = simplify(g2, remove.loops=T)
 names(V(g2))
 sort(degree(g2), decreasing = T)[1:50]
 sort(betweenness(g2), decreasing = T)[1:20]
-
 
 
 #------------------------------------------#
@@ -215,6 +176,8 @@ sort(betweenness(g7), decreasing = T)[1:20]
 
 # ---------------------------------------------------------------------------- #
 # Facciamo l'ACL sulle parole 'più importanti' di ogni gruppo
+library(FactoMineR)
+library(factoextra)
 
 ris = list()
 
@@ -232,38 +195,34 @@ ris <- c(ris[[1]], ris[[2]], ris[[3]], ris[[4]], ris[[5]], ris[[6]], ris[[7]])
 length(ris)
 
 
-dataM <- X[, colnames(X) %in% ris]
+dataM <- as.matrix(X[, colnames(X) %in% ris])
 dim(dataM) # 34641  1327
 sum(rowSums(dataM) == 0) # 251
 dataM <- dataM[rowSums(dataM) > 0,]
 dim(dataM)
 
+class(dataM)
 
+res.ca <- CA(dataM, graph = T)
+print(res.ca)
+# Eigenvalue
+eig.val <- get_eigenvalue(res.ca)
+eig.val
+#se eigenvalue = 1 situazione problematica...
+#eigenvalues sono la projected intertia
+#somma tutta interzia (somma eigenvalue) ??? phi square
+inerzia <- sum(eig.val[,1])
+size <-sum(nobel)
+chi <- inerzia*size
 
-# ---------------------------------------------------------------------------- #
+fviz_screeplot(res.ca, addlabels = TRUE, ylim = c(0, 60))
+#inerzia di una nube di punti ??? somma di inerzia di ogni punto
+#inerzia di un punto ??? la massa per la distanza al quadrato dal centro di gravit??? (distanza chi quadrato)
+#duality: ragionare su inerzia di righe o di colonne ??? lo stesso..giocano un ruolo simmetrico. Non come PCA!
+#troviamo assi ortogonali che massimizzano la bont??? della proiezione (projected inertia), data da massa per distanza a quadrato della proiezione dall'origine
 
-#tweet in giornata
-tw$hour[tw$hour==0] <- 24
-tw$hour[tw$hour==1] <- 25
-tw$hour[tw$hour==2] <- 26
+fviz_ca_biplot(res.ca)
 
-par(mfrow=c(1,2))
-
-matplot(table(tw$hour, tw$partito), type="b", bty="l" ,
-        xlab="hours" , ylab="Frequenza", lwd=3 , pch=17, main="Tweet per ogni ora del giorno")
-matplot(prop.table(table(tw$hour, tw$partito)), type="b", bty="l",
-        xlab="hours" , ylab="Frequenza", lwd=3 , pch=17, main="Tweet per ogni ora del giorno")
-
-legend("topright", 
-       legend = c("FdI", "FI", "IV", "LSP", "M5S", "PD"), 
-       col = 1:6, 
-       pch = 17, 
-       bty = "n", 
-       pt.cex = 2, 
-       cex = 1, 
-       text.col = "black", 
-       horiz = F , 
-       inset = c(0.01, 0.1))
 
 
 # ---------------------------------------------------------------------------- #
