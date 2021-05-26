@@ -103,15 +103,12 @@ table(gr$membership)
 #------------------------------------------#
 
 X = tt[tt$word %in% gr$names[gr$membership == 3],] %>% cast_sparse(row=id, column=word, value=freq)
-quantile(colSums(X), probs = seq(0.89, 0.99, length = 10))
-X <- X[, colSums(X)>quantile(colSums(X), probs = 0.97)]
-dim(X)  #  24669 11262
+X <- X[, colSums(X)>quantile(colSums(X), probs = 0.97)] # mostro il 3% delle parole
+dim(X)  # 24669   336
 M=t(X) %*% X
 g3 = graph_from_adjacency_matrix(M, weighted=TRUE, mode="undirected",
                                 add.rownames=TRUE)
-# 11262 272971
-g3 = simplify(g3, remove.loops=T) #11262 261709
-#rappresentazione grafica
+g3 = simplify(g3, remove.loops=T)
 large = which(degree(g3)>quantile(degree(g3), .9))
 V(g3)$label = NA
 V(g3)$label[large] = V(g3)$name[large]
@@ -121,7 +118,6 @@ pl3 <- ggraph(df_gg, layout="fr") +
   geom_node_label(aes(label=label,colour = 2),show.legend=F) +
   scale_size(guide="none") +
   theme_graph()
-
 # salvo in file
 ggsave(pl3, file="net3.pdf", device=cairo_pdf, width=20, height=10)
 
@@ -131,7 +127,6 @@ ggsave(pl3, file="net3.pdf", device=cairo_pdf, width=20, height=10)
 #------------------------------------------#
 
 X = tt[tt$word %in% gr$names[gr$membership == 8],] %>% cast_sparse(row=id, column=word, value=freq)
-quantile(colSums(X), probs = seq(0.89, 0.99, length = 10))
 X <- X[, colSums(X)>quantile(colSums(X), probs = 0.97)]
 dim(X) #27777   300
 M=t(X) %*% X
