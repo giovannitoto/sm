@@ -1,7 +1,10 @@
 # ---------------------------------------------------------------------------- #
 
 # Analisi esplorative varie:
-#  - rimozione stem troppo rari e/o comuni
+# - Rete su tutti gli stem
+# - Clustering attraverso Louvain
+# - Interpretazione dei gruppi guardando le parole più importanti
+#       - Importanza per degree e per betweenness
 
 # ---------------------------------------------------------------------------- #
 
@@ -69,11 +72,16 @@ tw <- tw[tw$reply_to==0,]
 
 #Rete di unigrammi
 require(Matrix)
-tt =  tw %>% select(tweet=tweet, partito=partito) %>% mutate(id = 1:n())
+tt =  tw %>% select(tweet=tweet_stem, partito=partito) %>% mutate(id = 1:n())
 tt = tt %>% unnest_tokens(word,tweet) %>%
   group_by(id,word) %>% mutate(freq = n())
-X = tt %>% cast_sparse(row=id, column=word, value=freq)
-dim(X)  # 41417 46942
+X = tt %>% cast_sparse(row=id, column=word, value=freq, )
+nomi <- colnames(X)
+del = which(colSums(X)<=1)
+X = X[,-del]
+colnames(X) <- nomi[-del]
+
+dim(X)  # 34641 13311
 M=t(X) %*% X
 #matrix parole x parole= sorta di distanza che ci misura quante volte due parole distinte compaiono nello stesso documento 
 dim(M)
@@ -95,130 +103,142 @@ g = delete_vertices(g, which(components(g)$membership != 1))
 #LOUVAIN####
 gr = cluster_louvain(graph = g)
 table(gr$membership)
-#1     2     3     4     5     6     7     8     9    10    11    12    13    14    15 
-#5425    34 11262  2678    20    13   558 10061  1421     8    13     5 10050     6     4 
+
+#   1    2    3    4    5    6    7 
+#1917  196 4129 3014  804 2937  314 
 
 #------------------------------------------#
-# Gruppo 3 n: 11262
-#------------------------------------------#
-
-X = tt[tt$word %in% gr$names[gr$membership == 3],] %>% cast_sparse(row=id, column=word, value=freq)
-X <- X[, colSums(X)>quantile(colSums(X), probs = 0.97)] # mostro il 3% delle parole
-dim(X)  # 24669   336
-M=t(X) %*% X
-g3 = graph_from_adjacency_matrix(M, weighted=TRUE, mode="undirected",
-                                add.rownames=TRUE)
-g3 = simplify(g3, remove.loops=T)
-large = which(degree(g3)>quantile(degree(g3), .9))
-V(g3)$label = NA
-V(g3)$label[large] = V(g3)$name[large]
-df_gg = as_tbl_graph(g3)
-pl3 <- ggraph(df_gg, layout="fr") +
-  geom_edge_link(show.legend = FALSE, aes(alpha=weight)) +
-  geom_node_label(aes(label=label,colour = 2),show.legend=F) +
-  scale_size(guide="none") +
-  theme_graph()
-# salvo in file
-ggsave(pl3, file="net3.pdf", device=cairo_pdf, width=20, height=10)
-
-
-#------------------------------------------#
-# Gruppo 8
-#------------------------------------------#
-
-X = tt[tt$word %in% gr$names[gr$membership == 8],] %>% cast_sparse(row=id, column=word, value=freq)
-X <- X[, colSums(X)>quantile(colSums(X), probs = 0.97)]
-dim(X) #27777   300
-M=t(X) %*% X
-g8 = graph_from_adjacency_matrix(M, weighted=TRUE, mode="undirected",
-                                 add.rownames=TRUE)
-g8 = simplify(g8, remove.loops=T) 
-large = which(degree(g8)>quantile(degree(g8), .9))
-V(g8)$label = NA
-V(g8)$label[large] = V(g8)$name[large]
-df_gg = as_tbl_graph(g8)
-pl8 <- ggraph(df_gg, layout="fr") +
-  geom_edge_link(show.legend = FALSE, aes(alpha=weight)) +
-  geom_node_label(aes(label=label,colour = 2),show.legend=F) +
-  scale_size(guide="none") +
-  theme_graph()
-
-ggsave(pl8, file="net8.pdf", device=cairo_pdf, width=20, height=10)
-
-#------------------------------------------#
-# Gruppo 13
-#------------------------------------------#
-
-X = tt[tt$word %in% gr$names[gr$membership == 13],] %>% cast_sparse(row=id, column=word, value=freq)
-quantile(colSums(X), probs = seq(0.89, 0.99, length = 10))
-X <- X[, colSums(X)>quantile(colSums(X), probs = 0.97)]
-dim(X)
-M=t(X) %*% X
-g13 = graph_from_adjacency_matrix(M, weighted=TRUE, mode="undirected",
-                                 add.rownames=TRUE)
-g13 = simplify(g13, remove.loops=T) 
-large = which(degree(g13)>quantile(degree(g13), .9))
-V(g13)$label = NA
-V(g13)$label[large] = V(g13)$name[large]
-df_gg = as_tbl_graph(g13)
-pl13 <- ggraph(df_gg, layout="fr") +
-  geom_edge_link(show.legend = FALSE, aes(alpha=weight)) +
-  geom_node_label(aes(label=label,colour = 2),show.legend=F) +
-  scale_size(guide="none") +
-  theme_graph()
-
-ggsave(pl13, file="net13.pdf", device=cairo_pdf, width=20, height=10)
-
-#------------------------------------------#
-# Gruppo 1
+# Gruppo 1 n: 1917 - Dirette su facebok
 #------------------------------------------#
 
 X = tt[tt$word %in% gr$names[gr$membership == 1],] %>% cast_sparse(row=id, column=word, value=freq)
-X <- X[, colSums(X)>quantile(colSums(X), probs = 0.97)]
-dim(X)
+X <- X[, colSums(X)>quantile(colSums(X), probs = 0.90)] # mostro il 10% delle parole
+dim(X)  # 23421   192
 M=t(X) %*% X
 g1 = graph_from_adjacency_matrix(M, weighted=TRUE, mode="undirected",
-                                  add.rownames=TRUE)
-g1 = simplify(g1, remove.loops=T) 
-large = which(degree(g1)>quantile(degree(g1), .9))
-V(g1)$label = NA
-V(g1)$label[large] = V(g1)$name[large]
-df_gg = as_tbl_graph(g1)
-pl1 <- ggraph(df_gg, layout="fr") +
-  geom_edge_link(show.legend = FALSE, aes(alpha=weight)) +
-  geom_node_label(aes(label=label,colour = 2),show.legend=F) +
-  scale_size(guide="none") +
-  theme_graph()
+                                 add.rownames=TRUE)
+g1 = simplify(g1, remove.loops=T)
 
-ggsave(pl1, file="net1.pdf", device=cairo_pdf, width=20, height=10)
+names(sort(degree(g1), decreasing = T)[1:30])
+sort(betweenness(g1), decreasing = T)[1:20]
+
+#------------------------------------------#
+# Gruppo 2 n: 196 - Tante emoticon, roba estera: politica, american's cup, USA, Brexit, ...
+#------------------------------------------#
+
+X = tt[tt$word %in% gr$names[gr$membership == 2],] %>% cast_sparse(row=id, column=word, value=freq)
+dim(X)  #  983 196
+M=t(X) %*% X
+g2 = graph_from_adjacency_matrix(M, weighted=TRUE, mode="undirected",
+                                 add.rownames=TRUE)
+g2 = simplify(g2, remove.loops=T)
+names(V(g2))
+sort(degree(g2), decreasing = T)[1:50]
+sort(betweenness(g2), decreasing = T)[1:20]
+
 
 
 #------------------------------------------#
-# Gruppi sfigati: 2, 5, 6, 10, 11, 12, 14, 15
+# Gruppo 3 n: 4129 - Violenza sulle donne
 #------------------------------------------#
 
-gr$names[gr$membership == 2] # boh robe a caso
-gr$names[gr$membership == 5] # 
-gr$names[gr$membership == 6] # codici strani unicode
-gr$names[gr$membership == 10]
-gr$names[gr$membership == 11]
-gr$names[gr$membership == 12] # ancora codici unicode
-gr$names[gr$membership == 14] # pesce
-gr$names[gr$membership == 15]
+X = tt[tt$word %in% gr$names[gr$membership == 3],] %>% cast_sparse(row=id, column=word, value=freq)
+X <- X[, colSums(X)>quantile(colSums(X), probs = 0.90)] # mostro il 10% delle parole
+dim(X)  # 27376   413
+M=t(X) %*% X
+g3 = graph_from_adjacency_matrix(M, weighted=TRUE, mode="undirected",
+                                 add.rownames=TRUE)
+g3 = simplify(g3, remove.loops=T)
 
+sort(degree(g3), decreasing = T)[1:30]
+sort(betweenness(g3), decreasing = T)[1:20]
+
+#------------------------------------------#
+# Gruppo 4 n: 3014 - Manovre economico - politiche per l'emergenza
+#------------------------------------------#
+
+X = tt[tt$word %in% gr$names[gr$membership == 4],] %>% cast_sparse(row=id, column=word, value=freq)
+X <- X[, colSums(X)>quantile(colSums(X), probs = 0.90)] # mostro il 10% delle parole
+dim(X)  # 29924   302
+M=t(X) %*% X
+g4 = graph_from_adjacency_matrix(M, weighted=TRUE, mode="undirected",
+                                 add.rownames=TRUE)
+g4 = simplify(g4, remove.loops=T)
+
+sort(degree(g4), decreasing = T)[1:30]
+sort(betweenness(g4), decreasing = T)[1:20]
+
+#------------------------------------------#
+# Gruppo 5 n: 804 - Tweet su Roma 
+#------------------------------------------#
+
+X = tt[tt$word %in% gr$names[gr$membership == 5],] %>% cast_sparse(row=id, column=word, value=freq)
+dim(X)  #  11032   804
+M=t(X) %*% X
+g5 = graph_from_adjacency_matrix(M, weighted=TRUE, mode="undirected",
+                                 add.rownames=TRUE)
+g5 = simplify(g5, remove.loops=T)
+
+sort(degree(g5), decreasing = T)[1:30]
+sort(betweenness(g5), decreasing = T)[1:20]
+
+#------------------------------------------#
+# Gruppo 6 n: 2937 - Politica interna
+#------------------------------------------#
+
+X = tt[tt$word %in% gr$names[gr$membership == 6],] %>% cast_sparse(row=id, column=word, value=freq)
+X <- X[, colSums(X)>quantile(colSums(X), probs = 0.90)] # mostro il 10% delle parole
+dim(X)  # 27613   291
+M=t(X) %*% X
+g6 = graph_from_adjacency_matrix(M, weighted=TRUE, mode="undirected",
+                                 add.rownames=TRUE)
+g6 = simplify(g6, remove.loops=T)
+
+sort(degree(g6), decreasing = T)[1:30]
+sort(betweenness(g6), decreasing = T)[1:20]
+
+#------------------------------------------#
+# Gruppo 7 n: 314 - Covid/salute/ospedali/vaccini
+#------------------------------------------#
+
+X = tt[tt$word %in% gr$names[gr$membership == 7],] %>% cast_sparse(row=id, column=word, value=freq)
+dim(X)  # 27613   291
+M=t(X) %*% X
+g7 = graph_from_adjacency_matrix(M, weighted=TRUE, mode="undirected",
+                                 add.rownames=TRUE)
+g7 = simplify(g7, remove.loops=T)
+
+sort(degree(g7), decreasing = T)[1:30]
+sort(betweenness(g7), decreasing = T)[1:20]
 
 
 
 # ---------------------------------------------------------------------------- #
+# Facciamo l'ACL sulle parole 'più importanti' di ogni gruppo
+
+ris = list()
+
+for(i in 1:length(unique(gr$membership))){
+  cat(i, "\n")
+  X = tt[tt$word %in% gr$names[gr$membership == i],] %>% cast_sparse(row=id, column=word, value=freq)
+  M=t(X) %*% X
+  g = graph_from_adjacency_matrix(M, weighted=TRUE, mode="undirected",
+                                   add.rownames=TRUE)
+  g = simplify(g, remove.loops=T)
+  ris[[i]] = names(sort(degree(g), decreasing = T)[1:(dim(X)[2]*0.1)])
+}
+sum(sapply(ris, length)) # abbiamo 1327 stem 
+ris <- c(ris[[1]], ris[[2]], ris[[3]], ris[[4]], ris[[5]], ris[[6]], ris[[7]])
+length(ris)
 
 
-#altri metodi#####
-#ENUMERAZIONE (troppo oneroso comp.)##
-gr_optim <- cluster_optimal(graph = g)#per numerazione
-#FAST GREEDY: ottimizza modularity
-gr_greedy <- cluster_fast_greedy(graph = g)# via di mezzo tra i due 
-#WALKTRAP: basato su RW
-gr_walk <- walktrap.community(graph=g)
+dataM <- X[, colnames(X) %in% ris]
+dim(dataM) # 34641  1327
+sum(rowSums(dataM) == 0) # 251
+dataM <- dataM[rowSums(dataM) > 0,]
+dim(dataM)
+
+
 
 # ---------------------------------------------------------------------------- #
 
@@ -248,16 +268,8 @@ legend("topright",
 
 # ---------------------------------------------------------------------------- #
 
-tw[tw$hour==9 & tw$partito=="IV","username"]
-length(tw[tw$username=="ItaliaViva","username"])
-
-
-tw$tw
-
-
-
-
-
+# L'idea è quella di fare una LDA con 7 gruppi e poi verificare se i gruppi trovati
+# corrispondono ai gruppi trovati con la rete delle parole.
 
 # ---------------------------------------------------------------------------- #
 
