@@ -2,8 +2,6 @@
 
 # LDA
 
-setwd("C:/Users/Giovanni/Desktop/sm")
-
 # ---------------------------------------------------------------------------- #
 
 library(dplyr)
@@ -51,7 +49,7 @@ q_lda <- LDA(as.matrix(X), k=7, method="Gibbs", control=list(seed=123,
                                                              burnin=1000,
                                                              iter=5000))
 beta_topics <- tidy(q_lda, matrix="beta")
-dim(beta_topics) # 93177 x 3     nota: 93177 = k*V = 7*13311
+dim(beta_topics) # 93149 x 3     nota: 93149 = k*V = 7*13307
 
 # Per ogni topic selezione i 10 termini con peso maggiore, ovvero scelgo i 
 # termini a cui corrispondono i valori piu' alti dei parametri beta
@@ -80,7 +78,7 @@ for (j in 1:max(gamma_doc$topic)) {
   gamma <- cbind(gamma, gamma_doc[gamma_doc$topic==j,"gamma"])
 }
 colnames(gamma) <-  c("partito", "t1", "t2", "t3", "t4", "t5")
-dim(gamma) # 34632 x 6  (n x k)
+dim(gamma) # 34632 x 8  (n x k+1)
 
 # Grafici delle distr. a posteriori condizionate al partito di appartenenza
 # dei tweet
