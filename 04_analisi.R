@@ -45,12 +45,12 @@ nomi <- colnames(X)
 del <- which(colSums(X)<=1)
 X <- X[,-del]
 colnames(X) <- nomi[-del]
-dim(X)  # 34641 x 13311
+dim(X)  # 34641 13307
 
 # Costruisco matrice parole x parole, ogni suo elemento e' una sorta di distanza
 # che misura quante volte due parole distinte compaiono nello stesso documento 
 M <- t(X) %*% X
-dim(M)  # 13311 x 13311
+dim(M)  # 13307 x 13307
 
 # Costruisco la rete di unigrammi
 g <- graph_from_adjacency_matrix(M, weighted=T, mode="undirected", add.rownames=T)
@@ -60,7 +60,7 @@ g <- simplify(g, remove.loops=T)
 # una rete completamente connessa, quindi e' un comando balzabile
 table(components(g)$membership)
 g <- delete_vertices(g, which(components(g)$membership != 1)) 
-# g ha 13311 nodi/stem e 1687165 archi/co-occorrenze
+# g ha 13307 nodi/stem e 1686027  archi/co-occorrenze
 
 # ---------------------------------------------------------------------------- #
 
@@ -68,8 +68,8 @@ g <- delete_vertices(g, which(components(g)$membership != 1))
 
 gr <- cluster_louvain(graph=g)
 table(gr$membership)
-#   1    2    3    4    5    6    7 
-#1917  196 4129 3014  804 2937  314 
+#    1    2    3    4    5 
+# 1922 4189 3103 3045 1048 
 
 # Ho identificato 7 gruppi: costruisco una nuova sotto-rete per ogi comunita' e 
 # identifico il 10% delle parole piu' importanti
@@ -88,25 +88,24 @@ for(i in 1:length(unique(gr$membership))){
   ris <- c(ris, names(sort(degree(g), decreasing = T)[1:(dim(Xi)[2]*0.1)]))
 }
 # In totale, gli stem importanti sono 1327 di cui 29 emote
-length(ris)                # 1327 stem
-sum(grepl("emote_", ris))  #   29 emote
+length(ris)                # 1328 stem
+sum(grepl("emote_", ris))  #   23 emote
 
 # Nella variabile 'top50_words_by_community' ho salvato i 50 nodi/stem con maggior
 # degree per comunita'; li utilizzo per associare dei topic:
-#  - Gruppo 1 n: 1917 - Dirette su facebook
-#  - Gruppo 2 n:  196 - Tante emoticon, roba estera: politica, american's cup, USA, Brexit, ...
-#  - Gruppo 3 n: 4129 - Violenza sulle donne
-#  - Gruppo 4 n: 3014 - Manovre economico - politiche per l'emergenza
-#  - Gruppo 5 n:  804 - Tweet su Roma 
-#  - Gruppo 6 n: 2937 - Politica interna
-#  - Gruppo 7 n:  314 - Covid/salute/ospedali/vaccini
+#  - Gruppo 1 n: 1922 - Dirette su facebook, appuntamenti
+#  - Gruppo 2 n: 4189 - violenza sulle donne, auguri, principi astratti
+#  - Gruppo 3 n: 3103 - Manovre economico - politiche per l'emergenza
+#  - Gruppo 4 n: 3045 - politica interna
+#  - Gruppo 5 n: 1048 - Tweet su Roma e altre cose sconnesse
+top50_words_by_community[,5]
 
 # ---------------------------------------------------------------------------- #
 
 ### Analisi delle Corrispondenze Lessicali per partito
 
 # Costruisco una nuova matrice che considera tutti i tweet di un partito come un
-# unico documento; cosi' facendo avro' una matrice 6 x 22653
+# unico documento; cosi' facendo avro' una matrice 6 x 22641 
 create_X_partito <- function(tweet) {
   # Funzione per considerare tutti i tweet di un partito come un'unico testo e 
   # costruire la corrispondente matrice doc x stem
@@ -119,8 +118,8 @@ create_X_partito <- function(tweet) {
 }
 
 X_partito <- create_X_partito(tw)
-sum(colSums(X_partito) == 1)     # 9342 hapax (compaiono una volta in tutto il corpus)
-sum(colSums(X_partito > 1) == 1) # 5083 stem che compaiono solo in un partito
+sum(colSums(X_partito) == 1)     # 9334 hapax (compaiono una volta in tutto il corpus)
+sum(colSums(X_partito > 1) == 1) # 5080 stem che compaiono solo in un partito
 max(X_partito)                   # 2582 è la frequenza più alta
 
 # Distribuzione delle frequenze assolute degli stem nel corpus (DA SISTEMARE)
@@ -131,14 +130,14 @@ lines(density(colSums(X_partito)), col = 2, lwd = 2)
 # sono presenti in 'ris', ovvero non sono tra il 10% delle parole più usate in
 # ogni gruppo
 dataM <- as.matrix(X_partito[, colnames(X_partito) %in% ris])
-dim(dataM) #  6 partiti x 1327 stem
+dim(dataM) #  6 partiti x 1328 stem
 colnames(dataM)[colSums(dataM) == 1] # 0 nessun hapax
 sum(rowSums(dataM) == 0) # 0, nessun partito risulta non rappresentato
 
-# Osservo che 24 stem che compaiono solo in un partito sono utilizzati da un 
+# Osservo che 17 stem che compaiono solo in un partito sono utilizzati da un 
 # solo partito: vado a vedere le parole
-sum(colSums(dataM > 1) == 1)
-colnames(dataM)[colSums(dataM > 1) == 1]
+sum(colSums(dataM > 1) == 1)            # 17
+colnames(dataM)[colSums(dataM > 1) == 1]# stem dei tweet di forza italia
 
 # Distribuzione delle frequenze assolute degli stem nel corpus (DA SISTEMARE)
 hist(colSums(dataM), nclass = 100, xlim = c(0, 1000), freq = F)
@@ -147,7 +146,7 @@ hist(colSums(dataM), nclass = 100, xlim = c(0, 1000), freq = F)
 
 # Ora posso usare la LCA:
 #  - graph=T mette sia i punti riga sia i punti colonna ma fa cagare perchè ci
-#    sono troppe parole (1327)
+#    sono troppe parole (1328)
 res.ca <- CA(dataM, graph = F)
 
 # Faccio il plot solo dei punti riga perche' mi interessano i partiti 
@@ -184,11 +183,11 @@ fviz_contrib(res.ca, choice = "row", axes = 2, top = 10)
 eig.val <- get_eigenvalue(res.ca)
 eig.val
 #        eigenvalue variance.percent cumulative.variance.percent
-# Dim.1  0.16769498         36.61530                    36.61530
-# Dim.2  0.12477814         27.24464                    63.85993
-# Dim.3  0.06311873         13.78164                    77.64157
-# Dim.4  0.05321652         11.61954                    89.26111
-# Dim.5  0.04918320         10.73889                   100.00000
+# Dim.1 0.16581765         36.90072                    36.90072
+# Dim.2 0.12362469         27.51119                    64.41191
+# Dim.3 0.06385366         14.20986                    78.62177
+# Dim.4 0.05088160         11.32309                    89.94486
+# Dim.5 0.04518395         10.05514                   100.00000
 
 # Da notare che il numero massimo di dimensioni e' 5, ovvero n-1; il seguente
 # comando mostra in maniera intuitiva il contributo di ogni dimensione
@@ -198,13 +197,12 @@ fviz_screeplot(res.ca, addlabels=TRUE, ylim = c(0, 50))
 row<- get_ca_row(res.ca)
 row$contrib
 #            Dim 1     Dim 2       Dim 3      Dim 4      Dim 5
-# M5S 7.177108e+01 15.764313  0.01119796  0.2708699  0.1206916
-# LSP 2.364157e+01 39.497808 11.49244030  0.5270024  0.3600231
-# PD  2.958495e-01 13.097252  2.17562481 54.4609424 17.4103904
-# FI  3.855467e-04  8.052813  7.47655966  2.6529516 63.7422701
-# FdI 4.280838e+00  0.106368 60.47164502  4.8893886 16.5719276
-# IV  1.027118e-02 23.481446 18.37253225 37.1988450  1.7946973
-
+# M5S 7.071378e+01 16.55558256 3.564965e-08  0.5117973  0.121885499
+# LSP 2.462886e+01 38.59361094 1.129607e+01  1.0299395  0.002075495
+# PD  3.399837e-01  9.87173160 6.038086e-01  3.8148092 72.944357591
+# FI  5.185253e-04  7.94538965 9.290830e+00 47.8652086 16.802116228
+# FdI 4.284376e+00  0.07139244 5.555907e+01 26.1046307  0.314078484
+# IV  3.248748e-02 26.96229281 2.325022e+01 20.6736146  9.815486703
 #primo fattore PD, FdI, IV e M5S, secondo FI, FdI
 
 
@@ -214,11 +212,11 @@ col$contrib[1:50,] # 50 stem piu' importanti
 
 # Guardo le 20 parole che forniscono un maggior contributo alla prima dimensione (cos2)
 fviz_contrib(res.ca, choice="col", axes=1, top=20)
-# 'emote_st' potrebbe essere faccia con le stelle o faccia sorpresa
+# emote_star e salvini sono i primi due, ma sono livelli molto bassi eccetto per il primo
 
 # Guardo le 20 parole che forniscono un maggior contributo alla seconda dimensione (cos2)
 fviz_contrib(res.ca, choice="col", axes=2, top=20)
-
+# contributi più distribuiti su tutte le parole: emote_star e salvini le prime
 # ---------------------------------------------------------------------------- #
 
 ### Clustering delle parole sulle coordinate colonna
@@ -232,7 +230,7 @@ fviz_contrib(res.ca, choice="col", axes=2, top=20)
 
 # HCPC
 hc <- HCPC(res.ca, nb.clust=-1)
-fviz_dend(hc, show_labels=FALSE)
+fviz_dend(hc, show_labels=T)
 
 # Individuals factor map: grafico bellino per indicare i gruppi, riporta anche i centroidi
 fviz_cluster(hc, geom = "point", main = "Factor map")
