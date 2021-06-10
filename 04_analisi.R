@@ -25,10 +25,13 @@ library(FactoMineR)
 library(factoextra)
 library(cluster)  # AGNES, DIANA
 
+library(xtable)
+
 # ---------------------------------------------------------------------------- #
 
 rm(list=ls())
 load("C:/Users/noido/Documenti/GitHub/sm/data/02_tweets_stem.RData")
+load("C:/Users/Emanuele/Documenti/GitHub/sm/data/02_tweets_stem.RData")
 # Considero solo i tweet originali, non le risposte ad altri tweet
 tw <- tw[tw$reply_to==0,]
 
@@ -83,8 +86,7 @@ for(i in 1:length(unique(gr$membership))){
   g <- simplify(g, remove.loops=T)
   cat(dim(Xi)[2], "x 0.1=", dim(Xi)[2]*0.1, "\n")
   top50_words_by_community <- cbind(top50_words_by_community,
-                                    paste(str_pad(sort(degree(g),decreasing=T),4,pad=" "),
-                                          names(sort(degree(g),decreasing=T)), sep=" - ")[1:50])
+                                    names(sort(degree(g),decreasing=T))[1:50])
   ris <- c(ris, names(sort(degree(g), decreasing = T)[1:(dim(Xi)[2]*0.1)]))
 }
 # In totale, gli stem importanti sono 1327 di cui 29 emote
@@ -214,6 +216,18 @@ row$contrib
 # Contributi degli stem sulle dimensioni: visto che sono tanti, vado a vedere solo i primi 50
 col <- get_ca_col(res.ca)
 col$contrib[1:50,] # 50 stem piu' importanti
+
+k <- 50
+stem_contributi_CA <- matrix(NA, ncol = 5, nrow = k)
+colnames(stem_contributi_CA) <- paste("Dimensione", as.factor(1:5))
+stem_contributi_CA[,1] <- cbind(names(sort(col$contrib[,1], decreasing = T)[1:k]))
+stem_contributi_CA[,2] <- cbind(names(sort(col$contrib[,2], decreasing = T)[1:k]))
+stem_contributi_CA[,3] <- cbind(names(sort(col$contrib[,3], decreasing = T)[1:k]))
+stem_contributi_CA[,4] <- cbind(names(sort(col$contrib[,4], decreasing = T)[1:k]))
+stem_contributi_CA[,5] <- cbind(names(sort(col$contrib[,5], decreasing = T)[1:k]))
+
+stem_contributi_CA
+print(xtable(stem_contributi_CA, type = "latex"), file = "stem_contributi_CA.tex")
 
 # Guardo le 20 parole che forniscono un maggior contributo alla prima dimensione (cos2)
 fviz_contrib(res.ca, choice="col", axes=1, top=20)
