@@ -4,6 +4,13 @@
 
 # ---------------------------------------------------------------------------- #
 
+library(TextWiller)
+library(dplyr)
+library(stringr)
+library(quanteda)
+
+# ---------------------------------------------------------------------------- #
+
 rm(list=ls())
 load("data/01_tweets.RData")
 # creo colonna in cui salvare il tweet originale
@@ -13,22 +20,24 @@ tw$tweet_stem <- NA
 
 # ---------------------------------------------------------------------------- #
 
-library(TextWiller)
-library(dplyr)
-library(stringr)
-library(quanteda)
-
-# ---------------------------------------------------------------------------- #
-
 # Importo la lista delle stopwords, che verra' utilizzata all'interno del ciclo
 stop_words <- read.table("data/stopwords-it.txt", encoding="UTF-8",
                          quote="\"", comment.char="")$V1
 stop_words <- paste(stop_words, collapse = '\\b|\\b')
 stop_words <- paste0('\\b', stop_words, '\\b')
 
-# Ottengo lista delle emote; per sicurezza, sostituisco prima quelle piu' lunghe
-emote_list <- tw$tweet %>% str_match_all("\\bemote_\\w+\\b") %>% unlist %>% unique
+# Ottengo lista delle emote
+emote_list <- tw$tweet %>% str_match_all("\\bemote_\\w+-?\\w+\\b") %>% unlist %>% unique
 emote_list <- emote_list[order(nchar(emote_list),decreasing=T)]
+# Sostituisco eventuali "-" con "_"
+emote_list_fix <- emote_list %>% stringr::str_replace_all(pattern="-", replacement="_") %>% unlist
+for (ei in 1:length(emote_list)) {
+  tw$tweet <- stringr::str_replace_all(string=tw$tweet,
+                                       pattern=paste("\\b",emote_list_fix[ei],"\\b",sep=""),
+                                       replacement=emote_list[ei])
+}
+# Ottengo lista di emote modificate in modo da non essere influenzate dallo stemming
+emote_list <- emote_list_fix
 emote_list_fix <- paste("zzz", emote_list, "zzz", sep="")
 
 # Uso delle RegEx per identificare e rimuovere unicode
@@ -41,7 +50,7 @@ UNICODE <- c("u[0-9]{4}[0-9A-Fa-f]{4}", "u[0-9]{4}")
 # words_to_merge <- words_to_merge[order(nchar(words_to_merge),decreasing=T)]
 # ---------------------------------------------------------------------------- #
 
-# Il ciclo serve solo a capire a che punto e' il procedimento.
+# Il ciclo e' inefficiente ma serve per capire a che punto e' il procedimento.
 for(i in unique(tw$partito)){
   cat(i, "\n", sep="")
   for(j in unique(tw$username[tw$partito==i])){
