@@ -28,7 +28,7 @@ library(cluster)  # AGNES, DIANA
 # ---------------------------------------------------------------------------- #
 
 rm(list=ls())
-load("data/02_tweets_stem.RData")
+load("C:/Users/noido/Documenti/GitHub/sm/data/02_tweets_stem.RData")
 # Considero solo i tweet originali, non le risposte ad altri tweet
 tw <- tw[tw$reply_to==0,]
 
@@ -151,6 +151,11 @@ res.ca <- CA(dataM, graph = F)
 
 # Faccio il plot solo dei punti riga perche' mi interessano i partiti 
 fviz_ca_row(res.ca, repel = TRUE)
+
+
+
+
+
 # Se considero la prima dimensione:
 #   - FI, PD, IV molto vicine, allo stesso livello praticamente
 #   - M5S e LSP agli estremi
@@ -229,8 +234,13 @@ fviz_contrib(res.ca, choice="col", axes=2, top=20)
 # se ottengo sempre risultati simili, posso concludere che esistono dei cluster
 
 # HCPC
-hc <- HCPC(res.ca, nb.clust=-1)
+hc <- ?HCPC(res.ca, nb.clust=-1)
 fviz_dend(hc, show_labels=T)
+
+CA_ggplot <- fviz_ca_row(res.ca, repel = TRUE)
+plot_grid(fviz_ca_row(res.ca, repel = TRUE),
+          fviz_dend(hc, show_labels=T),
+          ncol = 2)
 
 # Individuals factor map: grafico bellino per indicare i gruppi, riporta anche i centroidi
 fviz_cluster(hc, geom = "point", main = "Factor map")

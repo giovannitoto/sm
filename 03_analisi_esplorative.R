@@ -12,7 +12,7 @@ library(tidyverse)
 
 rm(list=ls())
 load("data/02_tweets_stem.RData")
-
+load("C:/Users/noido/Documenti/GitHub/sm/data/02_tweets_stem.RData")
 # ---------------------------------------------------------------------------- #
 
 for (part in unique(tw$partito)) {
