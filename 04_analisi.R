@@ -30,8 +30,7 @@ library(xtable)
 # ---------------------------------------------------------------------------- #
 
 rm(list=ls())
-load("C:/Users/noido/Documenti/GitHub/sm/data/02_tweets_stem.RData")
-load("C:/Users/Emanuele/Documenti/GitHub/sm/data/02_tweets_stem.RData")
+load("data/02_tweets_stem.RData")
 # Considero solo i tweet originali, non le risposte ad altri tweet
 tw <- tw[tw$reply_to==0,]
 
@@ -138,25 +137,21 @@ sum(rowSums(dataM) == 0) # 0, nessun partito risulta non rappresentato
 
 # Osservo che 17 stem che compaiono solo in un partito sono utilizzati da un 
 # solo partito: vado a vedere le parole
-sum(colSums(dataM > 1) == 1)            # 17
-colnames(dataM)[colSums(dataM > 1) == 1]# stem dei tweet di forza italia
+sum(colSums(dataM > 1) == 1)              # 17
+colnames(dataM)[colSums(dataM > 1) == 1]  # stem dei tweet di forza italia
 
 # Distribuzione delle frequenze assolute degli stem nel corpus (DA SISTEMARE)
-hist(colSums(dataM), nclass = 100, xlim = c(0, 1000), freq = F)
+hist(colSums(dataM), nclass=100, xlim=c(0, 1000), freq=F)
 
 # ---------------------------------------------------------------------------- #
 
 # Ora posso usare la LCA:
 #  - graph=T mette sia i punti riga sia i punti colonna ma fa cagare perchè ci
 #    sono troppe parole (1328)
-res.ca <- CA(dataM, graph = F)
+res.ca <- CA(dataM, graph=FALSE)
 
 # Faccio il plot solo dei punti riga perche' mi interessano i partiti 
-fviz_ca_row(res.ca, repel = TRUE)
-
-
-
-
+fviz_ca_row(res.ca, repel=TRUE)
 
 # Se considero la prima dimensione:
 #   - FI, PD, IV molto vicine, allo stesso livello praticamente
@@ -248,10 +243,11 @@ fviz_contrib(res.ca, choice="col", axes=2, top=20)
 # se ottengo sempre risultati simili, posso concludere che esistono dei cluster
 
 # HCPC
-hc <- ?HCPC(res.ca, nb.clust=-1)
+hc <- HCPC(res.ca, nb.clust=-1)
 fviz_dend(hc, show_labels=T)
 
 CA_ggplot <- fviz_ca_row(res.ca, repel = TRUE)
+library(cowplot)
 plot_grid(fviz_ca_row(res.ca, repel = TRUE),
           fviz_dend(hc, show_labels=T),
           ncol = 2)
@@ -259,12 +255,12 @@ plot_grid(fviz_ca_row(res.ca, repel = TRUE),
 # Individuals factor map: grafico bellino per indicare i gruppi, riporta anche i centroidi
 fviz_cluster(hc, geom = "point", main = "Factor map")
 
-View(hc$data.clust)   # ?
-hc$desc.var$category  # ?
-View(hc$data.clust)   # ?
-hc$desc.var           # ?
-hc$desc.axes          # ?
-hc$desc.ind           # ?
+# View(hc$data.clust)   # ?
+# hc$desc.var$category  # ?
+# View(hc$data.clust)   # ?
+# hc$desc.var           # ?
+# hc$desc.axes          # ?
+# hc$desc.ind           # ?
 
 # Metodi gerarchici
 seed.dist <- dist(res.ca$row$coord, method="euclidean") # matrice di distanze
