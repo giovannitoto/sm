@@ -69,6 +69,7 @@ plot_base <- ggplot(term_pl, aes(term, beta, fill=factor(topic))) +
   geom_col() + facet_wrap(~topic, scales="free", nrow=1)
 plot_base + theme(legend.position="none") + coord_flip()
 
+# ---------------------------------------------------------------------------- #
 
 # Per ogni topic ottengo i 50 stem piu' importanti e metto tutto in tabella
 top_50_words <- beta_topics %>% group_by(topic) %>% top_n(50, beta) %>%
@@ -80,7 +81,6 @@ for (j in 1:5) {
   t_table <- cbind(t_table, tmp_list[order(tmp_list$beta,decreasing=T),2])
 }
 t_table
-
 
 # ---------------------------------------------------------------------------- #
 
@@ -95,149 +95,104 @@ dim(gamma) # 34641 x 6  (n x k+1)
 
 # ---------------------------------------------------------------------------- #
 
-# Grafici delle distr. a posteriori condizionate al partito di appartenenza
-# dei tweet
-par(mfrow=c(1,2))
-partito_list <- unique(gamma$partito)
-for (k in 2:3) {
-  post_tmp <- gamma[gamma$partito==partito_list[1],k]
-  post_tmp_dens <- density(post_tmp)
-  postmode <- post_tmp_dens$x[which.max(post_tmp_dens$y)]
-  # plot
-  plot(density(post_tmp), col=1, lwd=2, main=paste("Topic",k-1),
-       ylim=c(0,25))
-  abline(v=mean(post_tmp), col=1, lty=2)
-  #abline(v=postmode, col=1, lty=2)
-  for (p in 2:6) {
-    post_tmp <- gamma[gamma$partito==partito_list[p],k]
-    post_tmp_dens <- density(post_tmp)
-    postmode <- post_tmp_dens$x[which.max(post_tmp_dens$y)]
-    # plot
-    lines(density(post_tmp), col=p, lwd=2)
-    abline(v=mean(post_tmp), col=p, lty=2)
-    #abline(v=postmode, col=p, lty=2)
-  }
-  legend("topright", legend=partito_list, fill=1:6, horiz=F, cex=1)
-}
-
-# ---------------------------------------------------------------------------- #
-
-# Ottengo valore atteso e varianza per ogni topic fissato il partito
-partito_list <- unique(gamma$partito)
-partito_tables <- list()
-for (p in partito_list) {
-  post_tmp <- gamma[gamma$partito==p,-1]
-  partito_tables[[p]] <- cbind(paste("Topic", 1:5),
-                               round(apply(post_tmp, 2, mean), 4),
-                               round(apply(post_tmp, 2, sd), 4))
-}
 # Ottengo colori utilizzati da ggplot
 gg_color_hue <- function(n) {
   hues = seq(15, 375, length = n + 1)
   hcl(h = hues, l = 65, c = 100)[1:n]
 }
-gg_colors <- gg_color_hue(5)
+gg_colors <- gg_color_hue(6)
 plot(1:5, pch=16, cex=2, col=gg_colors)
 
+# ---------------------------------------------------------------------------- #
+
+
 # Traccio grafico con le distr. dei topic per un fissato partito
-for (p in partito_list[1]) {
+gg_colors <- gg_color_hue(5)
+for (p in partito_list) {
   post_tmp <- gamma[gamma$partito==p,-1]
   # Costruisco grafico
-  p_tmp <- ggplot(post_tmp, aes(x=t1)) +
-    geom_density(aes(x=t1, color=gg_colors[1]), lwd=0.8, data=post_tmp) +
-    geom_density(aes(x=t2, color=gg_colors[2]), lwd=0.8, data=post_tmp) +
-    geom_density(aes(x=t3, color=gg_colors[3]), lwd=0.8, data=post_tmp) +
-    geom_density(aes(x=t4, color=gg_colors[4]), lwd=0.8, data=post_tmp) +
-    geom_density(aes(x=t5, color=gg_colors[5]), lwd=0.8, data=post_tmp) +
+  p_tmp <- ggplot(post_tmp, aes(x=t1)) + ylim(0, 20) +
+    stat_density(geom="line",position="identity", aes(x=t1), color=gg_colors[1], lwd=0.8, data=post_tmp) +
+    stat_density(geom="line",position="identity", aes(x=t2), color=gg_colors[2], lwd=0.8, data=post_tmp) +
+    stat_density(geom="line",position="identity", aes(x=t3), color=gg_colors[3], lwd=0.8, data=post_tmp) +
+    stat_density(geom="line",position="identity", aes(x=t4), color=gg_colors[4], lwd=0.8, data=post_tmp) +
+    stat_density(geom="line",position="identity", aes(x=t5), color=gg_colors[5], lwd=0.8, data=post_tmp) +
     geom_vline(xintercept=mean(post_tmp[,1]), linetype="dashed", color=gg_colors[1], size=0.8) +
     geom_vline(xintercept=mean(post_tmp[,2]), linetype="dashed", color=gg_colors[2], size=0.8) +
     geom_vline(xintercept=mean(post_tmp[,3]), linetype="dashed", color=gg_colors[3], size=0.8) +
     geom_vline(xintercept=mean(post_tmp[,4]), linetype="dashed", color=gg_colors[4], size=0.8) +
     geom_vline(xintercept=mean(post_tmp[,5]), linetype="dashed", color=gg_colors[5], size=0.8) +
-    xlab(p) + ylab("Densità")
+    xlab(p) + ylab("Densità") + theme(legend.position="none")
   # Creo tabella contenente valore atteso e varianza per ogni topic
-  table_tmp <- cbind(paste("Topic", 1:5),
-                     round(apply(post_tmp, 2, mean), 4),
-                     round(apply(post_tmp, 2, sd), 4))
+  table_tmp <- cbind(1:5,
+                     format(round(apply(post_tmp, 2, mean), 4),nsmall=2),
+                     format(round(apply(post_tmp, 2, sd), 4),nsmall=2))
+  table_tmp <- rbind(c("topic", "mean", "sd"), table_tmp)
   # Aggiungo la tabella al grafico come legenda
-  require(gridExtra)
-  table_tmp_grob <- tableGrob(table_tmp, gpar.coretext=gpar(fontsize=8),
-                              par.coltext=gpar(fontsize=8), 
-                              gpar.rowtext=gpar(fontsize=8))
-  pp <- arrangeGrob(p + theme(legend.position = "none"), 
-                    arrangeGrob(table_tmp_grob, legend), ncol=2)
+  require(gridExtra); require(grid); require(gtable)
+  grob_t1 <- ttheme_minimal(core=list(bg_params=list(fill=c("white",gg_colors[1:5]),col=NA)))
+  table_tmp_grob <- tableGrob(table_tmp, theme=grob_t1, rows=NULL)
+  table_tmp_grob <- gtable_add_grob(table_tmp_grob,
+                       grobs=rectGrob(gp=gpar(fill=NA, lwd=1)),
+                       t=1, b=nrow(table_tmp_grob), l=1, r=ncol(table_tmp_grob))
+  # Unisco grafico e tabella
+  pp_tmp <- arrangeGrob(p_tmp, table_tmp_grob, nrow=1, ncol=2, widths=c(4,1))
   # Salvo grafico
-  ggsave(p5, filename="lda_density_legend.png", device="png")
+  ggsave(pp_tmp, filename=paste("lda_density_",p,".png",sep=""), device="png")
 }
-
-
-  
-  
-p2 <- ggplot(gamma, aes(x=t2)) +
-  geom_density(aes(x=t2, color="Media"), colour ="black", lwd=0.8, data=gamma) +
-  geom_density(aes(x=t2, group=partito, color=partito), lwd=0.6) +
-  xlab("Topic 2") + ylab("Densità") + theme(legend.position="none")
-
-
-
-
-
-
-
-
-
-par(mfrow=c(2,1))
-post_tmp <- gamma[gamma$partito=="M5S",-1]
-head(post_tmp)
-# plot
-plot(density(post_tmp$t1), col=1, lwd=2, main="M5S",
-     ylim=c(0,25), xlim=c(0.1,0.40))
-abline(v=mean(post_tmp[,1]), col=1, lty=2)
-cat(mean(post_tmp[,1]),"\n")
-for (p in 2:5) {
-  lines(density(post_tmp[,p]), col=p, lwd=2)
-  abline(v=mean(post_tmp[,p]), col=p, lty=2)
-}
-legend("topright", legend=paste("Topic",1:5), fill=1:5, horiz=F, cex=1)
-for (p in 1:5) {
-  cat(mean(post_tmp[,p]),"   ", sd(post_tmp[,p]), "\n")
-}
-
-
-
 
 # ---------------------------------------------------------------------------- #
 
-
-
-p2 <- ggplot(gamma, aes(x=t2)) +
-  geom_density(aes(x=t2, color="Media"), colour ="black", lwd=0.8, data=gamma) +
-  geom_density(aes(x=t2, group=partito, color=partito), lwd=0.6) +
-  xlab("Topic 2") + ylab("Densità") + theme(legend.position="none")
-ggsave(p2, filename="lda_density_2.png", device="png")
-
-p3 <- ggplot(gamma, aes(x=t3)) +
-  geom_density(aes(x=t3, color="Media"), colour ="black", lwd=0.8, data=gamma) +
-  geom_density(aes(x=t3, group=partito, color=partito), lwd=0.6) +
-  xlab("Topic 3") + ylab("Densità") + theme(legend.position="none")
-ggsave(p3, filename="lda_density_3.png", device="png")
-
-p4 <- ggplot(gamma, aes(x=t4)) +
-  geom_density(aes(x=t4, color="Media"), colour ="black", lwd=0.8, data=gamma) +
-  geom_density(aes(x=t4, group=partito, color=partito), lwd=0.6) +
-  xlab("Topic 4") + ylab("Densità") + theme(legend.position="none")
-ggsave(p4, filename="lda_density_4.png", device="png")
-
-p5 <- ggplot(gamma, aes(x=t5)) +
-  geom_density(aes(x=t5, fill=partito, group=partito), lwd=0.6) +
-  xlab("Topic 5") + ylab("Densità") +
-  theme(legend.position="left",
-        legend.title = element_text(size = 30),
-        legend.text = element_text(size = 30)) +
-  labs(fill = "Partito")
-
-p5
-ggsave(p5, filename="lda_density_legend.png", device="png")
-
+# Traccio grafico con le distr. dei partiti per un fissato topic
+gg_colors <- gg_color_hue(6)
+t_dict <- list("t1"="Topic 1","t2"="Topic 2","t3"="Topic 3","t4"="Topic 4","t5"="Topic 5")
+for (t in c("t1","t2","t3","t4","t5")) {
+  # Creo tabella contenente valore atteso e varianza per ogni topic
+  means_tmp <- c(mean(gamma[gamma$partito==partito_list[1],t]),
+                 mean(gamma[gamma$partito==partito_list[2],t]),
+                 mean(gamma[gamma$partito==partito_list[3],t]),
+                 mean(gamma[gamma$partito==partito_list[4],t]),
+                 mean(gamma[gamma$partito==partito_list[5],t]),
+                 mean(gamma[gamma$partito==partito_list[6],t]))
+  sd_tmp <- c(sd(gamma[gamma$partito==partito_list[1],t]),
+              sd(gamma[gamma$partito==partito_list[2],t]),
+              sd(gamma[gamma$partito==partito_list[3],t]),
+              sd(gamma[gamma$partito==partito_list[4],t]),
+              sd(gamma[gamma$partito==partito_list[5],t]),
+              sd(gamma[gamma$partito==partito_list[6],t]))
+  table_tmp <- cbind(partito_list,
+                     format(round(means_tmp, 4),nsmall=4),
+                     format(round(sd_tmp, 4),nsmall=4))
+  table_tmp <- rbind(c("partito", "mean", "sd"), table_tmp)
+  colnames(table_tmp) <- NULL
+  # Costruisco grafico
+  p_tmp <- ggplot(gamma, aes(x=!!ensym(t))) + ylim(0, 20) +
+    stat_density(geom="line",position="identity", aes(x=!!ensym(t)), color="#000000", lwd=1.0, data=gamma) +
+    stat_density(geom="line",position="identity", aes(x=!!ensym(t)), color=gg_colors[1], lwd=0.8, data=gamma[gamma$partito==partito_list[1],-1]) +
+    stat_density(geom="line",position="identity", aes(x=!!ensym(t)), color=gg_colors[2], lwd=0.8, data=gamma[gamma$partito==partito_list[2],-1]) +
+    stat_density(geom="line",position="identity", aes(x=!!ensym(t)), color=gg_colors[3], lwd=0.8, data=gamma[gamma$partito==partito_list[3],-1]) +
+    stat_density(geom="line",position="identity", aes(x=!!ensym(t)), color=gg_colors[4], lwd=0.8, data=gamma[gamma$partito==partito_list[4],-1]) +
+    stat_density(geom="line",position="identity", aes(x=!!ensym(t)), color=gg_colors[5], lwd=0.8, data=gamma[gamma$partito==partito_list[5],-1]) +
+    stat_density(geom="line",position="identity", aes(x=!!ensym(t)), color=gg_colors[6], lwd=0.8, data=gamma[gamma$partito==partito_list[6],-1]) +
+    geom_vline(xintercept=mean(gamma[,t]), linetype="dashed", color="black", size=1.0) +
+    geom_vline(xintercept=means_tmp[1], linetype="dashed", color=gg_colors[1], size=0.8) +
+    geom_vline(xintercept=means_tmp[2], linetype="dashed", color=gg_colors[2], size=0.8) +
+    geom_vline(xintercept=means_tmp[3], linetype="dashed", color=gg_colors[3], size=0.8) +
+    geom_vline(xintercept=means_tmp[4], linetype="dashed", color=gg_colors[4], size=0.8) +
+    geom_vline(xintercept=means_tmp[5], linetype="dashed", color=gg_colors[5], size=0.8) +
+    geom_vline(xintercept=means_tmp[6], linetype="dashed", color=gg_colors[6], size=0.8) +
+    xlab(t_dict[[t]]) + ylab("Densità") + theme(legend.position="none")
+  # Aggiungo la tabella al grafico come legenda
+  require(gridExtra); require(grid); require(gtable)
+  grob_t1 <- ttheme_minimal(core=list(bg_params=list(fill=c("white",gg_colors[1:6]),col=NA)))
+  table_tmp_grob <- tableGrob(table_tmp, theme=grob_t1, rows=NULL)
+  table_tmp_grob <- gtable_add_grob(table_tmp_grob,
+                                    grobs=rectGrob(gp=gpar(fill=NA, lwd=1)),
+                                    t=1, b=nrow(table_tmp_grob), l=1, r=ncol(table_tmp_grob))
+  # Unisco grafico e tabella
+  pp_tmp <- arrangeGrob(p_tmp, table_tmp_grob, nrow=1, ncol=2, widths=c(4,1))
+  # Salvo grafico
+  ggsave(pp_tmp, filename=paste("lda_density_",t,".png",sep=""), device="png")
+}
 
 # ---------------------------------------------------------------------------- #
