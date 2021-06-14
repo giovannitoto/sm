@@ -99,7 +99,9 @@ sum(grepl("emote_", ris))  #   23 emote
 #  - Gruppo 3 n: 3103 - Manovre economico - politiche per l'emergenza
 #  - Gruppo 4 n: 3045 - politica interna
 #  - Gruppo 5 n: 1048 - Tweet su Roma e altre cose sconnesse
-top50_words_by_community[,5]
+top50_words_by_community
+
+xtable(top50_words_by_community)
 
 # ---------------------------------------------------------------------------- #
 
@@ -208,12 +210,11 @@ row$contrib
 #primo fattore PD, FdI, IV e M5S, secondo FI, FdI
 
 
-# Contributi degli stem sulle dimensioni: visto che sono tanti, vado a vedere solo i primi 50
+# Contributi degli stem sulle dimensioni: visto che sono tanti, vado a vedere
+# solo i primi 50 per ogni dimenzione
 col <- get_ca_col(res.ca)
-col$contrib[1:50,] # 50 stem piu' importanti
-
 k <- 50
-stem_contributi_CA <- matrix(NA, ncol = 5, nrow = k)
+stem_contributi_CA <- matrix(NA, ncol=5, nrow=k)
 colnames(stem_contributi_CA) <- paste("Dimensione", as.factor(1:5))
 stem_contributi_CA[,1] <- cbind(names(sort(col$contrib[,1], decreasing = T)[1:k]))
 stem_contributi_CA[,2] <- cbind(names(sort(col$contrib[,2], decreasing = T)[1:k]))
@@ -222,7 +223,8 @@ stem_contributi_CA[,4] <- cbind(names(sort(col$contrib[,4], decreasing = T)[1:k]
 stem_contributi_CA[,5] <- cbind(names(sort(col$contrib[,5], decreasing = T)[1:k]))
 
 stem_contributi_CA
-print(xtable(stem_contributi_CA, type = "latex"), file = "stem_contributi_CA.tex")
+
+# ---------------------------------------------------------------------------- #
 
 # Guardo le 20 parole che forniscono un maggior contributo alla prima dimensione (cos2)
 fviz_contrib(res.ca, choice="col", axes=1, top=20)
@@ -231,6 +233,7 @@ fviz_contrib(res.ca, choice="col", axes=1, top=20)
 # Guardo le 20 parole che forniscono un maggior contributo alla seconda dimensione (cos2)
 fviz_contrib(res.ca, choice="col", axes=2, top=20)
 # contributi più distribuiti su tutte le parole: emote_star e salvini le prime
+
 # ---------------------------------------------------------------------------- #
 
 ### Clustering delle parole sulle coordinate colonna
@@ -246,21 +249,22 @@ fviz_contrib(res.ca, choice="col", axes=2, top=20)
 hc <- HCPC(res.ca, nb.clust=-1)
 fviz_dend(hc, show_labels=T)
 
-CA_ggplot <- fviz_ca_row(res.ca, repel = TRUE)
+# Grafico 3D
+plot(hc, choice="3D.map")
+
+# Riporto fianco a fianco il dendogramma e il clustering
+CA_ggplot <- fviz_ca_row(res.ca, repel=TRUE)
 library(cowplot)
 plot_grid(fviz_ca_row(res.ca, repel = TRUE),
           fviz_dend(hc, show_labels=T),
           ncol = 2)
 
+# ---------------------------------------------------------------------------- #
+
 # Individuals factor map: grafico bellino per indicare i gruppi, riporta anche i centroidi
 fviz_cluster(hc, geom = "point", main = "Factor map")
 
-# View(hc$data.clust)   # ?
-# hc$desc.var$category  # ?
-# View(hc$data.clust)   # ?
-# hc$desc.var           # ?
-# hc$desc.axes          # ?
-# hc$desc.ind           # ?
+# ---------------------------------------------------------------------------- #
 
 # Metodi gerarchici
 seed.dist <- dist(res.ca$row$coord, method="euclidean") # matrice di distanze
