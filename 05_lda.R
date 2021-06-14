@@ -111,7 +111,7 @@ gg_colors <- gg_color_hue(5)
 for (p in partito_list) {
   post_tmp <- gamma[gamma$partito==p,-1]
   # Costruisco grafico
-  p_tmp <- ggplot(post_tmp, aes(x=t1)) + ylim(0, 20) +
+  p_tmp <- ggplot(post_tmp, aes(x=t1)) + xlim(0.1, 0.45) + ylim(0, 20) +
     stat_density(geom="line",position="identity", aes(x=t1), color=gg_colors[1], lwd=0.8, data=post_tmp) +
     stat_density(geom="line",position="identity", aes(x=t2), color=gg_colors[2], lwd=0.8, data=post_tmp) +
     stat_density(geom="line",position="identity", aes(x=t3), color=gg_colors[3], lwd=0.8, data=post_tmp) +
@@ -166,7 +166,7 @@ for (t in c("t1","t2","t3","t4","t5")) {
   table_tmp <- rbind(c("partito", "mean", "sd"), table_tmp)
   colnames(table_tmp) <- NULL
   # Costruisco grafico
-  p_tmp <- ggplot(gamma, aes(x=!!ensym(t))) + ylim(0, 20) +
+  p_tmp <- ggplot(gamma, aes(x=!!ensym(t))) + xlim(0.1, 0.45) + ylim(0, 20) +
     stat_density(geom="line",position="identity", aes(x=!!ensym(t)), color="#000000", lwd=1.0, data=gamma) +
     stat_density(geom="line",position="identity", aes(x=!!ensym(t)), color=gg_colors[1], lwd=0.8, data=gamma[gamma$partito==partito_list[1],-1]) +
     stat_density(geom="line",position="identity", aes(x=!!ensym(t)), color=gg_colors[2], lwd=0.8, data=gamma[gamma$partito==partito_list[2],-1]) +
